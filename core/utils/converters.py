@@ -1,6 +1,6 @@
 def camel_case_to_snake_case(input_str: str) -> str:
+    input_str = input_str.replace("_Model", "").replace("Model", "")
     chars = []
-    input_str = input_str.replace("Model", "")
     for c_idx, char in enumerate(input_str):
         if c_idx and char.isupper():
             nxt_idx = c_idx + 1
@@ -12,6 +12,7 @@ def camel_case_to_snake_case(input_str: str) -> str:
                 chars.append("_")
         chars.append(char.lower())
     return "".join(chars)
+
 
 
 def str_to_bool(value: str) -> bool:
