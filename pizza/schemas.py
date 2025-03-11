@@ -14,6 +14,5 @@ class PizzaSchema(PizzaSchemaBase):
     @classmethod
     def define_fields(cls):
         cls.update_fields(
-            include={"id", "name", "size", "price"},
-            exclude={"created_at", "updated_at"}
+            include={"id", "name", "size", "price", "created_at", "updated_at"},
         )
