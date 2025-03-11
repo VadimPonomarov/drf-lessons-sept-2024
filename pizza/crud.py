@@ -1,4 +1,4 @@
-from pizza.models import PizzaModel
+from apps.pizza.models import PizzaModel
 from pizza.schemas import PizzaSchemaBase, PizzaSchema
 from loguru import logger
 

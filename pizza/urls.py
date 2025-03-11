@@ -1,6 +1,6 @@
 from django.urls import path
 
-from pizza.views import PizzaView, PizzaDetailView
+from apps.pizza.views import PizzaView, PizzaDetailView
 
 urlpatterns = [
     path("", PizzaView.as_view(), name='pizza'),
