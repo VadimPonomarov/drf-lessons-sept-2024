@@ -1,16 +1,19 @@
-from djantic import ModelSchema
+from datetime import datetime
+from core.enums.pizza import PizzaSize
+from core.schemas.base import BaseSchema
 
-from pizza.models import PizzaModel
+class PizzaSchemaBase(BaseSchema):
+    id: int
+    name: str
+    size: PizzaSize
+    price: float
+    created_at: datetime
+    updated_at: datetime
 
-
-class PizzaSchemaBase( ModelSchema):
-    class Config:
-        model=PizzaModel
-        model_fields = ["name", "size", "price"]
-
-
-class PizzaSchema(ModelSchema, ):
-    class Config:
-        model = PizzaModel
-        model_fields = ["id", "name", "size", "price", "created_at", "updated_at"]
-
+class PizzaSchema(PizzaSchemaBase):
+    @classmethod
+    def define_fields(cls):
+        cls.update_fields(
+            include={"id", "name", "size", "price"},
+            exclude={"created_at", "updated_at"}
+        )
