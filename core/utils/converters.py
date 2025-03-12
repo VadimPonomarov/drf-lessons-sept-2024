@@ -17,3 +17,11 @@ def camel_case_to_snake_case(input_str: str) -> str:
 
 def str_to_bool(value: str) -> bool:
     return value.lower() in ("yes", "true", "t", "1", "on", "y", "enable", 1)
+
+from drf_yasg import openapi
+
+def pydantic_schema_to_openapi(pydantic_schema):
+    return openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties=pydantic_schema.model_json_schema()['properties']
+    )

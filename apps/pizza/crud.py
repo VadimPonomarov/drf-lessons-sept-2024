@@ -5,7 +5,7 @@ from loguru import logger
 class PizzaCRUD:
     def create(self, data: PizzaSchemaBase):
         try:
-            pizza = PizzaModel(**data.dict())
+            pizza = PizzaModel(**data.model_dump())
             pizza.save()
             return PizzaSchema.from_orm(pizza)
         except Exception as e:
@@ -28,7 +28,7 @@ class PizzaCRUD:
 
     def update(self, pizza_id: int, data: PizzaSchemaBase):
         try:
-            pizza_data = data.dict(exclude_unset=True)
+            pizza_data = data.model_dump(exclude_unset=True)
             PizzaModel.objects.filter(pk=pizza_id).update(**pizza_data)
             pizza = PizzaModel.objects.get(pk=pizza_id)
             return PizzaSchema.from_orm(pizza)
