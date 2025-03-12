@@ -1,5 +1,5 @@
 from apps.pizza.models import PizzaModel
-from pizza.schemas import PizzaSchemaBase, PizzaSchema
+from apps.pizza.schemas import PizzaSchemaBase, PizzaSchema
 from loguru import logger
 
 class PizzaCRUD:
