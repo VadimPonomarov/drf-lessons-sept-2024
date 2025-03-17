@@ -1,0 +1,44 @@
+[project]
+name = "drf-lessons-sept-2024"
+version = "0.1.0"
+description = ""
+authors = [
+    { name = "Вадим", email = "pvs.versia@gmail.com" }
+]
+readme = "README.md"
+requires-python = ">=3.12"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+loguru = "^0.7.2"
+orjson = "^3.10.12"
+black = "^24.10.0"
+isort = "^5.13.2"
+flake8 = "^7.1.1"
+ruff = "^0.9.2"
+
+[tool.isort]
+profile = "black"
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+known_third_party = [
+    "fastapi",
+    "requests",
+    "uvicorn",
+    "numpy",
+    "pandas",
+    "sqlalchemy",
+    "pydantic",
+    "starlette"
+]
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+default_section = "THIRDPARTY"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "C", "N", "B", "Q", "S", "I"]
+ignore = ["E501", "S105"]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
