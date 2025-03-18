@@ -26,6 +26,13 @@ services:
     volumes:
       - ./backend/db:/var/lib/postgresql/data
 
+  web:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./client:/usr/share/nginx/html
+
 #  adminer:
 #    image: adminer
 #    ports:
