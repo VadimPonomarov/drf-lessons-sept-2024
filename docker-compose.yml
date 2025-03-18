@@ -1,7 +1,8 @@
+version: "3.9"
 services:
   app:
     build:
-      context: ./backend
+      context: .
     volumes:
       - ./backend:/app
     env_file:
@@ -9,9 +10,10 @@ services:
     ports:
       - "8888:8000"
     restart: on-failure
+    depends_on:
+      - pg
     command: >
       sh -c "python manage.py runserver 0.0.0.0:8000"
-
 
   pg:
     image: postgres
@@ -23,7 +25,6 @@ services:
       - "5432:5432"
     volumes:
       - ./db:/var/lib/postgresql/data
-
 
 #  adminer:
 #    image: adminer

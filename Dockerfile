@@ -7,13 +7,13 @@ ENV PYTHONUNBUFFERED 1\
     PIP_NO_CACHE_DIR off\
     PIP_DISABLE_PIP_VERSION_CHECK on\
     PIP_DEFAULT_TIMEOUT=100\
-    POETRY_VERSION=1.5.1\
+    POETRY_VERSION=1.0.2\
     POETRY_NO_INTERACTION=1\
     DEBIAN_FRONTEND=noninteractive\
     COLUMNS=80
 
 RUN apk update && \
-    apk add --no-cache gcc musl-dev postgresql-dev curl 
+    apk add --no-cache gcc musl-dev postgresql-dev curl
 
 RUN mkdir /app
 
@@ -23,8 +23,8 @@ ENV POETRY_HOME=/usr/local/poetry
 RUN curl -sSL https://install.python-poetry.org | python3 -
 ENV PATH=$POETRY_HOME/bin:$PATH
 
-COPY ../pyproject.toml /app/
+COPY pyproject.toml /app
 
 RUN poetry config virtualenvs.create false
 RUN poetry lock
-RUN poetry install
+RUN poetry install --no-root
