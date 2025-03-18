@@ -5,6 +5,7 @@ from rest_framework.generics import ListCreateAPIView
 from apps.users.docs.swagger_params import pagination_parameters, filtering_parameters
 from apps.users.filters import UsersFilter
 from apps.users.serializers import UserSerializer
+from rest_framework.permissions import AllowAny
 
 UserModel = get_user_model()
 
@@ -13,6 +14,7 @@ class ListCreateUsersView(ListCreateAPIView):
     queryset = UserModel.objects.all()
     serializer_class = UserSerializer
     filterset_class = UsersFilter
+    permission_classes = [AllowAny]
 
     @swagger_auto_schema(
         manual_parameters=pagination_parameters + filtering_parameters

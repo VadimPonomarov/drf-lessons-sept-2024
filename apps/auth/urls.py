@@ -14,6 +14,6 @@ class CustomTokenRefreshView(TokenRefreshView):
 
 
 urlpatterns = [
-    path("token/", CustomTokenObtainPairView.as_view(), name="auth_login"),
-    path("token/refresh/", CustomTokenRefreshView.as_view(), name="auth_refresh"),
+    path("login", CustomTokenObtainPairView.as_view(), name="auth_login"),
+    path("refresh", CustomTokenRefreshView.as_view(), name="auth_refresh"),
 ]
