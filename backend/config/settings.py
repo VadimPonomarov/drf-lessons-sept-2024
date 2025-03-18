@@ -14,9 +14,6 @@ import os
 from pathlib import Path
 
 from .extra_config import * # noqa
-from dotenv import load_dotenv
-
-load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -120,10 +117,10 @@ AUTH_USER_MODEL = "users.UserModel"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "HOST": os.getenv("POSTGRES_HOST", "localhost"),
-        "PORT": os.getenv("POSTGRES_PORT", 5432),
-        "NAME": os.getenv("POSTGRES_DB", "db"),
-        "USER": os.getenv("POSTGRES_USER", "user"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "password"),
+        "HOST": os.environ["POSTGRES_HOST"] or "pg",
+        "PORT": os.environ["POSTGRES_PORT"] or 5432,
+        "NAME": os.environ["POSTGRES_DB"] or "db",
+        "USER": os.environ["POSTGRES_USER"] or "user",
+        "PASSWORD": os.environ["POSTGRES_PASSWORD"] or "password",
     }
 }
