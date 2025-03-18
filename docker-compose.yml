@@ -1,4 +1,17 @@
 services:
+  app:
+    build:
+      context: ./backend
+    volumes:
+      - ./backend:/app
+    env_file:
+      - .env
+    ports:
+      - "8888:8000"
+    restart: on-failure
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:8000"
+
 
   pg:
     image: postgres
