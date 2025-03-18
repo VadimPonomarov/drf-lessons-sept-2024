@@ -14,7 +14,6 @@ class ListCreateUsersView(ListCreateAPIView):
     queryset = UserModel.objects.all()
     serializer_class = UserSerializer
     filterset_class = UsersFilter
-    permission_classes = [AllowAny]
 
     @swagger_auto_schema(
         manual_parameters=pagination_parameters + filtering_parameters
