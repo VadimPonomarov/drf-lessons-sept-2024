@@ -9,22 +9,20 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
-import os
 from pathlib import Path
 
-from .extra_config import * # noqa
+from .extra_config import *  # noqa
+from .extra_config.storages import *  # noqa
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv("SECRET_KEY", "#my_secret_key_")
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
-DEBUG = bool(os.getenv("DEBUG", 1))
+DEBUG = bool(os.environ.get("DEBUG", 0))
 
 ALLOWED_HOSTS = []
 
 # Application definition
-
 INSTALLED_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -35,12 +33,13 @@ INSTALLED_APPS = [
     "drf_yasg",
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
+    "django_minio_backend",
+    "storages",
     # apps
     "core",
     "apps.auth",
     "apps.users",
 ]
-
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",  # Required for sessions
@@ -110,17 +109,6 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-APPEND_SLASH = bool(os.getenv("APPEND_SLASH", 0))
-
 AUTH_USER_MODEL = "users.UserModel"
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "HOST": os.environ["POSTGRES_HOST"] or "pg",
-        "PORT": os.environ["POSTGRES_PORT"] or 5432,
-        "NAME": os.environ["POSTGRES_DB"] or "db",
-        "USER": os.environ["POSTGRES_USER"] or "user",
-        "PASSWORD": os.environ["POSTGRES_PASSWORD"] or "password",
-    }
-}
+APPEND_SLASH = False

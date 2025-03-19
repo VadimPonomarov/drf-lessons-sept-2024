@@ -1,4 +1,6 @@
 from django.contrib.auth import get_user_model
+from rest_framework import serializers
+
 from apps.users.models import ProfileModel
 from core.serializers.base import BaseModelSerializer
 
@@ -6,9 +8,11 @@ UserModel = get_user_model()
 
 
 class ProfileSerializer(BaseModelSerializer):
+    avatar = serializers.ImageField(required=False, allow_null=True)
+
     class Meta(BaseModelSerializer.Meta):
         model = ProfileModel
-        fields = ("id", "name", "surname", "age", "created_at", "updated_at")
+        fields = ("id", "name", "surname", "age", "avatar", "created_at", "updated_at")
 
 
 class UserSerializer(BaseModelSerializer):
@@ -53,3 +57,9 @@ class UserSerializer(BaseModelSerializer):
             ProfileModel.objects.update_or_create(user=user, defaults=profile_data)
 
         return user
+
+
+class UserEditSerializer(UserSerializer):
+    class Meta(BaseModelSerializer.Meta):
+        model = UserModel
+        fields = ("email", "profile")
