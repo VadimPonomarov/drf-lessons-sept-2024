@@ -1,18 +1,27 @@
 from django.contrib.auth import get_user_model
+from django.db import transaction
 from rest_framework import serializers
 
 from apps.users.models import ProfileModel
+from core.enums.messages import MessagesEnum
 from core.serializers.base import BaseModelSerializer
+from core.serializers.file_upload import FileUploadSerializer
+from core.services.jwt import JwtService, ActivateToken, ActionToken
 
 UserModel = get_user_model()
 
 
-class ProfileSerializer(BaseModelSerializer):
+class ProfileSerializer(FileUploadSerializer, BaseModelSerializer):
     avatar = serializers.ImageField(required=False, allow_null=True)
 
     class Meta(BaseModelSerializer.Meta):
         model = ProfileModel
         fields = ("id", "name", "surname", "age", "avatar", "created_at", "updated_at")
+
+    def validate_avatar(self, value):
+        if value is None:
+            return value
+        return self.validate_file(value)
 
 
 class UserSerializer(BaseModelSerializer):
@@ -38,6 +47,7 @@ class UserSerializer(BaseModelSerializer):
             "is_superuser": {"read_only": True},
         }
 
+    @transaction.atomic
     def create(self, validated_data):
         profile_data = validated_data.pop("profile", None)
         user = UserModel(**validated_data)
@@ -46,7 +56,11 @@ class UserSerializer(BaseModelSerializer):
 
         if profile_data:
             ProfileModel.objects.create(user=user, **profile_data)
-
+        token = JwtService.create_token(user, ActivateToken)
+        message = MessagesEnum.EMAIL_ACTIVATE.get_message(
+            token=token, resource="activate"
+        )
+        print(message)
         return user
 
     def update(self, instance, validated_data):

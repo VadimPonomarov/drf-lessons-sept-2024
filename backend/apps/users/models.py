@@ -11,13 +11,12 @@ class ProfileModel(BaseModel):
     class Meta(BaseModel.Meta):
         db_table = "profiles"
 
-    name = models.CharField(max_length=255)
-    surname = models.CharField(max_length=255)
-    age = models.IntegerField()
+    name = models.CharField(max_length=255, blank=True)
+    surname = models.CharField(max_length=255, blank=True)
+    age = models.IntegerField(null=True)
     avatar = models.ImageField(
-        upload_to=iso_date_prefix,  # Префикс из даты, например 2023/04/06
-        storage=MinioBackend(bucket_name="test-bucket"),  # Указываем бакет
-        null=True,
+        upload_to=iso_date_prefix,
+        storage=MinioBackend(bucket_name="test-bucket"),
         blank=True,
     )
     user = models.OneToOneField("UserModel", on_delete=models.CASCADE,
