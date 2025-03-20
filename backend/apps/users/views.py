@@ -84,6 +84,7 @@ class UpdateAvatarView(UpdateAPIView):
     serializer_class = ProfileSerializer
     parser_classes = (MultiPartParser,)
     permission_classes = (AllowAny,)
+    allowed_methods = ['patch']
 
     def get_queryset(self):
         """
