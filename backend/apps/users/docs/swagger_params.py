@@ -1,5 +1,6 @@
 from drf_yasg import openapi
 
+# Pagination parameters
 pagination_parameters = [
     openapi.Parameter(
         name='page',
@@ -15,6 +16,7 @@ pagination_parameters = [
     ),
 ]
 
+# Filtering parameters
 filtering_parameters = [
     openapi.Parameter(
         name='id',
@@ -47,3 +49,39 @@ filtering_parameters = [
         type=openapi.TYPE_BOOLEAN
     ),
 ]
+
+# Parameters for updating avatar
+update_avatar_parameters = [
+    openapi.Parameter(
+        name="id",
+        in_=openapi.IN_PATH,
+        type=openapi.TYPE_INTEGER,
+        description="The user_id to identify the profile for updating the avatar."
+    ),
+    openapi.Parameter(
+        name="avatar",
+        in_=openapi.IN_FORM,
+        type=openapi.TYPE_FILE,
+        description="The new avatar file to be uploaded."
+    ),
+]
+
+# Responses for avatar update
+update_avatar_responses = {
+    200: openapi.Response(
+        description="Avatar updated successfully.",
+        schema=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                "avatar_url": openapi.Schema(
+                    type=openapi.TYPE_STRING,
+                    description="The URL of the updated avatar."
+                )
+            },
+        ),
+    ),
+    400: openapi.Response(
+        description="Bad Request: Invalid file or user not found."
+    ),
+}
+

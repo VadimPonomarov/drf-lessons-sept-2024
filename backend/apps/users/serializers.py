@@ -12,7 +12,7 @@ UserModel = get_user_model()
 
 
 class ProfileSerializer(FileUploadSerializer, BaseModelSerializer):
-    avatar = serializers.ImageField(required=False, allow_null=True, use_url=True,)
+    avatar = serializers.ImageField(required=False, allow_null=True, use_url=True, )
 
     class Meta(BaseModelSerializer.Meta):
         model = ProfileModel
@@ -63,6 +63,7 @@ class UserSerializer(BaseModelSerializer):
         print(message)
         return user
 
+    @transaction.atomic
     def update(self, instance, validated_data):
         profile_data = validated_data.pop("profile", None)
         user = super().update(instance, validated_data)
@@ -80,3 +81,9 @@ class UserEditSerializer(UserSerializer):
     class Meta(BaseModelSerializer.Meta):
         model = UserModel
         fields = ("email", "profile")
+
+
+class AvatarSerializer(BaseModelSerializer):
+    class Meta(BaseModelSerializer.Meta):
+        model = ProfileModel
+        fields = ("avatar",)

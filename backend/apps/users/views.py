@@ -4,10 +4,12 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
     UpdateAPIView
 from rest_framework.permissions import AllowAny
 
-from apps.users.docs.swagger_params import pagination_parameters, filtering_parameters
+from apps.users.docs.swagger_params import pagination_parameters, filtering_parameters, \
+    update_avatar_parameters, update_avatar_responses
 from apps.users.filters import UsersFilter
 from apps.users.models import ProfileModel
-from apps.users.serializers import UserSerializer, UserEditSerializer, ProfileSerializer
+from apps.users.serializers import UserSerializer, UserEditSerializer, \
+    AvatarSerializer
 
 UserModel = get_user_model()
 
@@ -66,7 +68,6 @@ class UserDetailView(RetrieveUpdateDestroyAPIView):
 
 
 from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -75,47 +76,25 @@ from rest_framework import status
 
 class UpdateAvatarView(UpdateAPIView):
     """
-    Обновление аватара для пользователя по user_id.
+    Update the avatar of a user's profile by user_id.
     """
-    serializer_class = ProfileSerializer
+    serializer_class = AvatarSerializer
     parser_classes = (MultiPartParser,)
     permission_classes = (AllowAny,)
     allowed_methods = ['PATCH']
 
     def get_queryset(self):
         """
-        Возвращает объект Profile, связанный с user_id.
+        Returns a Profile object associated with the given user_id.
         """
         user_id = self.kwargs.get("pk")
         return ProfileModel.objects.filter(user_id=user_id)
 
     @swagger_auto_schema(
-        operation_id="upload_avatar",
+        operation_id="update_avatar",
         operation_description="Update the avatar of a user's profile using user_id (pk).",
-        manual_parameters=[
-            openapi.Parameter(
-                name="avatar",
-                in_=openapi.IN_FORM,
-                type=openapi.TYPE_FILE,
-                description="The new avatar file to be uploaded",
-            )
-        ],
-        responses={
-            200: openapi.Response(
-                description="Avatar updated successfully",
-                schema=openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={
-                        "avatar_url": openapi.Schema(
-                            type=openapi.TYPE_STRING,
-                            description="The URL of the updated avatar",
-                        )
-                    },
-                ),
-            ),
-            400: openapi.Response(
-                description="Bad Request: Invalid file or user not found."),
-        },
+        manual_parameters=update_avatar_parameters,
+        responses=update_avatar_responses,
         consumes=["multipart/form-data"],
     )
     def patch(self, request, *args, **kwargs):
