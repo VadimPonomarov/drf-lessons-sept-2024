@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, \
     UpdateAPIView
-from rest_framework.parsers import FileUploadParser, DjangoMultiPartParser, BaseParser
 from rest_framework.permissions import AllowAny
 
 from apps.users.docs.swagger_params import pagination_parameters, filtering_parameters
@@ -17,7 +16,6 @@ class ListCreateUsersView(ListCreateAPIView):
     queryset = UserModel.objects.all()
     serializer_class = UserSerializer
     filterset_class = UsersFilter
-    parser_classes = (FileUploadParser, )
     permission_classes = (AllowAny,)
 
     @swagger_auto_schema(
@@ -41,7 +39,6 @@ class ListCreateUsersView(ListCreateAPIView):
 class UserDetailView(RetrieveUpdateDestroyAPIView):
     queryset = UserModel.objects.all()
     serializer_class = UserEditSerializer
-    parser_classes = (FileUploadParser, ) # Задаем парсеры для обработки multipart/form-data
     permission_classes = (AllowAny,)
 
     @swagger_auto_schema(
@@ -67,10 +64,9 @@ class UserDetailView(RetrieveUpdateDestroyAPIView):
     def delete(self, request, *args, **kwargs):
         return super().delete(request, *args, **kwargs)
 
-from django.contrib.auth import get_user_model
+
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from rest_framework.generics import CreateAPIView
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -84,17 +80,17 @@ class UpdateAvatarView(UpdateAPIView):
     serializer_class = ProfileSerializer
     parser_classes = (MultiPartParser,)
     permission_classes = (AllowAny,)
-    allowed_methods = ['patch']
+    allowed_methods = ['PATCH']
 
     def get_queryset(self):
         """
         Возвращает объект Profile, связанный с user_id.
         """
-        user_id = self.kwargs.get("pk")  # Достаем user_id из URL
+        user_id = self.kwargs.get("pk")
         return ProfileModel.objects.filter(user_id=user_id)
 
     @swagger_auto_schema(
-        operation_id="Update avatar",
+        operation_id="upload_avatar",
         operation_description="Update the avatar of a user's profile using user_id (pk).",
         manual_parameters=[
             openapi.Parameter(
@@ -117,20 +113,23 @@ class UpdateAvatarView(UpdateAPIView):
                     },
                 ),
             ),
-            400: openapi.Response(description="Bad Request: Invalid file or user not found."),
+            400: openapi.Response(
+                description="Bad Request: Invalid file or user not found."),
         },
         consumes=["multipart/form-data"],
     )
     def patch(self, request, *args, **kwargs):
-        user_id = self.kwargs.get("pk")  # Извлекаем user_id из URL
+        user_id = self.kwargs.get("pk")
         try:
             profile = ProfileModel.objects.get(user_id=user_id)
         except ProfileModel.DoesNotExist:
-            return Response({"error": "Profile not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Profile not found"},
+                            status=status.HTTP_404_NOT_FOUND)
 
         avatar_file = request.FILES.get("avatar")
         if not avatar_file:
-            return Response({"error": "Avatar file is required"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Avatar file is required"},
+                            status=status.HTTP_400_BAD_REQUEST)
 
         profile.avatar = avatar_file
         profile.save()
