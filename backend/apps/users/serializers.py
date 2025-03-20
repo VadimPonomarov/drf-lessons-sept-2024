@@ -6,13 +6,13 @@ from apps.users.models import ProfileModel
 from core.enums.messages import MessagesEnum
 from core.serializers.base import BaseModelSerializer
 from core.serializers.file_upload import FileUploadSerializer
-from core.services.jwt import JwtService, ActivateToken, ActionToken
+from core.services.jwt import JwtService, ActivateToken
 
 UserModel = get_user_model()
 
 
 class ProfileSerializer(FileUploadSerializer, BaseModelSerializer):
-    avatar = serializers.ImageField(required=False, allow_null=True)
+    avatar = serializers.ImageField(required=False, allow_null=True, use_url=True,)
 
     class Meta(BaseModelSerializer.Meta):
         model = ProfileModel
@@ -25,7 +25,7 @@ class ProfileSerializer(FileUploadSerializer, BaseModelSerializer):
 
 
 class UserSerializer(BaseModelSerializer):
-    profile = ProfileSerializer(many=False, required=False)
+    profile = ProfileSerializer(required=False, allow_null=True)
 
     class Meta(BaseModelSerializer.Meta):
         model = UserModel

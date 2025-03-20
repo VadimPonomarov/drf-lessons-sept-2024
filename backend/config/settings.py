@@ -14,7 +14,7 @@ from pathlib import Path
 from .extra_config import *  # noqa
 from .extra_config.storages import *  # noqa
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parents[2]
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 

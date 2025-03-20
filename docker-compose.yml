@@ -5,7 +5,7 @@ services:
     volumes:
       - ./backend:/app
     env_file:
-      - ./backend/.env
+      - .env
     ports:
       - "8888:8000"
     restart: on-failure
@@ -37,7 +37,7 @@ services:
     image: minio/minio
     container_name: minio
     env_file:
-      - ./backend/.env
+      - .env
     ports:
       - "9000:9000"    # MinIO API
       - "9001:9001"    # MinIO console
@@ -46,7 +46,57 @@ services:
       - ./minio/config:/root/.minio         # MinIO configuration
     command: server /data --console-address ":9001"
 
+  mailing:
+    build: ./mailing
+    environment:
+      - APP_CONFIG__DOCKER=True
+    env_file:
+      - .env
+    ports:
+      - "8001:8000"
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./mailing/src:/app
+    command: >
+      sh -c "uvicorn main:main_app --host 0.0.0.0 --port 8000"
 
+
+  rabbitmq:
+    image: rabbitmq:management-alpine
+    hostname: rabbitmq
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./mailing/rabbitmq:/var/lib/rabbitmq
+    ports:
+      - 15672:15672
+      - 5672:5672
+
+
+  celery:
+    build:
+      context: ./mailing
+    volumes:
+      - ./mailing/src:/app
+    env_file:
+      - .env
+    restart: always
+    depends_on:
+      - rabbitmq
+    command: >
+      sh -c "celery -A celery_config worker -l info"
+
+  flower:
+    image: mher/flower:0.9.7
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+      - celery
+    ports:
+      - "5555:5555"
+    command: ["flower", "--broker=pyamqp://guest:guest@rabbitmq:5672//", "--port=5555"]
 
 #  adminer:
 #    image: adminer

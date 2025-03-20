@@ -47,4 +47,3 @@ filtering_parameters = [
         type=openapi.TYPE_BOOLEAN
     ),
 ]
-

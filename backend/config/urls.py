@@ -20,7 +20,7 @@ from django.urls.conf import include
 
 from apps.users.urls import urlpatterns as users_urls
 from . import settings
-from .docs.urls import swagger_urlpatterns as docs_urls
+from .docs.urls import urlpatterns as docs_urls
 from apps.auth.urls import urlpatterns as auth_urls
 
 urlpatterns = [
