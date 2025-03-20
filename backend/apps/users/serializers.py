@@ -68,6 +68,9 @@ class UserSerializer(BaseModelSerializer):
         user = super().update(instance, validated_data)
 
         if profile_data:
+            if "avatar" in profile_data and profile_data["avatar"] is None:
+                profile_data.pop("avatar")
+
             ProfileModel.objects.update_or_create(user=user, defaults=profile_data)
 
         return user
