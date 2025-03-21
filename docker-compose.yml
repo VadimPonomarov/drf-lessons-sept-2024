@@ -11,8 +11,12 @@ services:
     restart: on-failure
     depends_on:
       - pg
+      - minio
+      - rabbitmq
+      - celery
     command: >
-      sh -c "python manage.py wait_db && python manage.py runserver 0.0.0.0:8000"
+      sh -c "python manage.py wait_db && python manage.py migrate && python manage.py 
+      runserver 0.0.0.0:8000"
 
   pg:
     image: postgres
@@ -69,7 +73,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./mailing/rabbitmq:/var/lib/rabbitmq
+      - ./rabbitmq:/var/lib/rabbitmq
     ports:
       - 15672:15672
       - 5672:5672
@@ -86,7 +90,7 @@ services:
     depends_on:
       - rabbitmq
     command: >
-      sh -c "celery -A celery_config worker -l info"
+      sh -c "celery -A celery_config worker -l info -P solo"
 
   flower:
     image: mher/flower:0.9.7

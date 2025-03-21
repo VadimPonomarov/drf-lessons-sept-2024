@@ -4,9 +4,11 @@ from rest_framework import serializers
 
 from apps.users.models import ProfileModel
 from core.enums.messages import MessagesEnum
+from core.logging.logger_config import logger
 from core.serializers.base import BaseModelSerializer
 from core.serializers.file_upload import FileUploadSerializer
 from core.services.jwt import JwtService, ActivateToken
+from core.services.send_email import send_email_service
 
 UserModel = get_user_model()
 
@@ -49,19 +51,24 @@ class UserSerializer(BaseModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        profile_data = validated_data.pop("profile", None)
-        user = UserModel(**validated_data)
-        user.set_password(validated_data["password"])
-        user.save()
+        try:
+            profile_data = validated_data.pop("profile", None)
+            user = UserModel(**validated_data)
+            user.set_password(validated_data["password"])
+            user.save()
 
-        if profile_data:
-            ProfileModel.objects.create(user=user, **profile_data)
-        token = JwtService.create_token(user, ActivateToken)
-        message = MessagesEnum.EMAIL_ACTIVATE.get_message(
-            token=token, resource="activate"
-        )
-        print(message)
-        return user
+            if profile_data:
+                ProfileModel.objects.create(user=user, **profile_data)
+            token = JwtService.create_token(user, ActivateToken)
+            message = MessagesEnum.EMAIL_ACTIVATE.get_message(
+                token=token, resource="api/users/activate"
+            )
+
+            send_email_service(title="Activate your account", message=message,
+                               to_email=validated_data["email"])
+            return user
+        except Exception as e:
+            logger.error(f"Error in create(): {e}")
 
     @transaction.atomic
     def update(self, instance, validated_data):

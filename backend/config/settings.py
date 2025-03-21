@@ -34,7 +34,9 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "rest_framework_simplejwt.token_blacklist",
     "django_minio_backend",
+    "setuptools",
     "storages",
+    "pika",
     # apps
     "core",
     "apps.auth",

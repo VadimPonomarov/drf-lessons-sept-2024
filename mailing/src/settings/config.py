@@ -28,9 +28,9 @@ class ApiPrefix(BaseSettingsBase):
 
 
 class CeleryConfig(BaseSettingsBase):
-    celery_broker: str | None = None
-    celery_backend: str | None = None
-    celery_include: str | None = None
+    celery_broker: str = "pyamqp://guest:guest@rabbitmq:5672//"
+    celery_backend: str = "rpc://"
+    celery_include: str = "services.mail_services"
 
     @property
     def get_celery_app(self) -> Celery:
@@ -58,8 +58,8 @@ class PikaConfig(BaseSettingsBase):
 
 
 class SendgridConfig(BaseSettingsBase):
-    api_key: str | None = None
-    my_email: str | None = None
+    api_key: str | None = "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"
+    my_email: str | None = "pvs.versia@gmail.com"
 
 
 class Settings(BaseSettingsBase):

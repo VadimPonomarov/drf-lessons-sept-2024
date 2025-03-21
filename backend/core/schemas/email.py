@@ -1,5 +1,4 @@
-from pydantic import BaseModel
-from settings.config import settings
+from pydantic import BaseModel, EmailStr
 
 
 class MyTemplateData(BaseModel):
@@ -9,8 +8,7 @@ class MyTemplateData(BaseModel):
 
 
 class SendEmailParams(BaseModel):
-    to_email: str = settings.sendgrid.my_email
+    to_email: str  # Stricter email validation
     from_email: str = "pvs.versia@gmail.com"
     subject: str = "Subject"
     template_data: dict[str, str]
-

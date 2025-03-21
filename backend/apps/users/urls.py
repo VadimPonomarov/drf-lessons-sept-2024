@@ -1,10 +1,11 @@
 from django.urls.conf import path
 
 from apps.users.views import ListCreateUsersView, UserDetailView, \
-    UpdateAvatarView
+    UpdateAvatarView, ActivateUserView
 
 urlpatterns = [
     path("", ListCreateUsersView.as_view(), name="user_list_create"),
+    path('activate', ActivateUserView.as_view(), name='activate_user'),
     path("<int:pk>", UserDetailView.as_view(), name="user_list_create"),
-    path('upload-avatar/<int:pk>/', UpdateAvatarView.as_view(), name='upload_avatar')
+    path('upload-avatar/<int:pk>', UpdateAvatarView.as_view(), name='upload_avatar'),
 ]

@@ -7,7 +7,7 @@ from pika.spec import Basic
 
 from core.enums.pika import ExchangeType, QueueType
 from core.schemas.email import SendEmailParams
-from settings.logger_config import logger
+from core.logging.logger_config import logger
 
 if TYPE_CHECKING:
     from pika.connection import ConnectionParameters
@@ -15,13 +15,13 @@ if TYPE_CHECKING:
 
 class ConnectionFactory:
     def __init__(
-        self,
-        parameters: "ConnectionParameters",
-        queue_name: str,
-        queue_type: QueueType = QueueType.DURABLE,
-        exchange_name: str = "",
-        exchange_type: ExchangeType = ExchangeType.DIRECT,
-        callback: Callable | None = None,
+            self,
+            parameters: "ConnectionParameters",
+            queue_name: str,
+            queue_type: QueueType = QueueType.DURABLE,
+            exchange_name: str = "",
+            exchange_type: ExchangeType = ExchangeType.DIRECT,
+            callback: Callable | None = None,
     ):
         self.__connection: BlockingConnection = BlockingConnection(parameters)
         self.__queue_name: str = queue_name
@@ -58,11 +58,11 @@ class ConnectionFactory:
             logger.error(f"Error in consume(): {e}")
 
     def get_callback(
-        self,
-        ch: BlockingChannel,
-        method: Basic.Deliver,
-        properties: BasicProperties,
-        body: bytes,
+            self,
+            ch: BlockingChannel,
+            method: Basic.Deliver,
+            properties: BasicProperties,
+            body: bytes,
     ) -> None:
         body = json.loads(body.decode("utf-8"))
         cb_params = SendEmailParams(**body).model_dump()
