@@ -90,6 +90,12 @@ class UserEditSerializer(UserSerializer):
         fields = ("email", "profile")
 
 
+class UserActivateSerializer(BaseModelSerializer):
+    class Meta(BaseModelSerializer.Meta):
+        model = UserModel
+        fields = ("is_active",)
+
+
 class AvatarSerializer(BaseModelSerializer):
     class Meta(BaseModelSerializer.Meta):
         model = ProfileModel

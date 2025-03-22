@@ -104,7 +104,7 @@ services:
       - celery
     ports:
       - "5555:5555"
-    command: ["flower", "--broker=pyamqp://guest:guest@rabbitmq:5672//", "--port=5555"]
+    command: [ "flower", "--broker=pyamqp://guest:guest@rabbitmq:5672//", "--port=5555" ]
 
 #  adminer:
 #    image: adminer

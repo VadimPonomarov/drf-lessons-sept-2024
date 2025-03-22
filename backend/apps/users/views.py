@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, \
-    UpdateAPIView, GenericAPIView, get_object_or_404
+    UpdateAPIView, get_object_or_404
 from rest_framework.permissions import AllowAny
 
 from apps.users.docs.swagger_params import pagination_parameters, filtering_parameters, \
@@ -10,7 +10,7 @@ from apps.users.docs.swagger_params import pagination_parameters, filtering_para
 from apps.users.filters import UsersFilter
 from apps.users.models import ProfileModel
 from apps.users.serializers import UserSerializer, UserEditSerializer, \
-    AvatarSerializer
+    AvatarSerializer, UserActivateSerializer
 from core.services.jwt import JwtService, ActivateToken
 
 UserModel = get_user_model()
@@ -118,12 +118,12 @@ class UpdateAvatarView(UpdateAPIView):
         return Response({"avatar_url": profile.avatar.url}, status=status.HTTP_200_OK)
 
 
-class ActivateUserView(GenericAPIView):
+class ActivateUserView(UpdateAPIView):
     """
     View to activate a user using a query parameter token.
     """
     queryset = UserModel.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = UserActivateSerializer
     permission_classes = (AllowAny,)
     http_method_names = ['get']
 
