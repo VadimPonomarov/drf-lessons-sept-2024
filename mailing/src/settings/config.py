@@ -1,8 +1,13 @@
+import os
 from typing import Literal
 
 from celery import Celery
+from dotenv import load_dotenv
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from services.encription_service.decrypt_service import decrypt_message
+
+load_dotenv(".env.example")
 
 
 class BaseSettingsBase(BaseSettings):
@@ -58,8 +63,15 @@ class PikaConfig(BaseSettingsBase):
 
 
 class SendgridConfig(BaseSettingsBase):
-    api_key: str | None = "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"
-    my_email: str | None = "pvs.versia@gmail.com"
+    api_key: str = Field(
+        default_factory=lambda: decrypt_message(
+            os.environ.get("APP_CONFIG__SENDGRID__API_KEY")
+        )
+    )
+    my_email: str = Field(
+        default_factory=lambda: decrypt_message(
+            os.environ.get("APP_CONFIG__SENDGRID__MY_EMAIL"))
+    )
 
 
 class Settings(BaseSettingsBase):

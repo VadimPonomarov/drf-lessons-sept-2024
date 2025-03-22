@@ -57,7 +57,7 @@ services:
     environment:
       - APP_CONFIG__DOCKER=True
     env_file:
-      - .env
+      - ./mailing/src/.env.example
     ports:
       - "8001:8000"
     depends_on:
