@@ -1,0 +1,12 @@
+import os
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "HOST": "localhost",
+        "PORT": 5432,
+        "NAME": "db",
+        "USER": "user",
+        "PASSWORD": "password",
+    }
+}

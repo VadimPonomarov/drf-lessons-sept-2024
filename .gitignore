@@ -138,3 +138,6 @@ GitHub.sublime-settings
 .history
 db
 .idea
+/rabbitmq/
+/minio/
+/client/
