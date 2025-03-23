@@ -16,7 +16,7 @@ from .extra_config.storages import *  # noqa
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY", "secret_key")
 
 DEBUG = bool(os.environ.get("DEBUG", 0))
 
@@ -105,6 +105,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = "static/"
+
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

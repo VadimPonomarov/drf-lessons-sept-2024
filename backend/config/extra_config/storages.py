@@ -9,13 +9,13 @@ AWS_S3_ENDPOINT_URL = os.environ.get("AWS_S3_ENDPOINT_URL", "http://minio:9000")
 AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME", "us-east-1")
 
 # MinIO Configuration
-MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT", "minio:9000")
-MINIO_ACCESS_KEY = os.getenv("MINIO_ROOT_USER", "root")
-MINIO_SECRET_KEY = os.getenv("MINIO_ROOT_PASSWORD", "password")
+MINIO_ENDPOINT = os.environ.get("MINIO_ENDPOINT", "minio:9000")
+MINIO_ACCESS_KEY = os.environ.get("MINIO_ROOT_USER", "root")
+MINIO_SECRET_KEY = os.environ.get("MINIO_ROOT_PASSWORD", "password")
 MINIO_MEDIA_FILES_BUCKET = "test-bucket"
 MINIO_USE_HTTPS = False
 MINIO_BUCKET_CHECK_ON_SAVE = True
-MINIO_CONSISTENCY_CHECK_ON_START = True
+MINIO_CONSISTENCY_CHECK_ON_START = False
 
 MINIO_PRIVATE_BUCKETS = [
     f"{MINIO_MEDIA_FILES_BUCKET}",
