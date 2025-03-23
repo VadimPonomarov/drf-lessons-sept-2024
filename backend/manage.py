@@ -5,7 +5,11 @@ import sys
 
 from dotenv import load_dotenv
 
-load_dotenv(".env.example")
+load_dotenv(
+    ".env.example"
+    if bool(os.environ.get("APP_CONFIG__IS_DOCKER", 0))
+    else ".env"
+)
 
 
 def main():

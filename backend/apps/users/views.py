@@ -1,14 +1,17 @@
+from abc import ABC
+
 from django.contrib.auth import get_user_model
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, \
-    UpdateAPIView, get_object_or_404
-from rest_framework.permissions import AllowAny
+from rest_framework.generics import RetrieveUpdateDestroyAPIView, \
+    UpdateAPIView, get_object_or_404, ListAPIView, CreateAPIView
+from rest_framework.permissions import AllowAny, IsAdminUser
 
 from apps.users.docs.swagger_params import pagination_parameters, filtering_parameters, \
     update_avatar_parameters, update_avatar_responses
 from apps.users.filters import UsersFilter
 from apps.users.models import ProfileModel
+from apps.users.permissions import IsMeUser, IsAdminUserOrMe, IsSuperUserOrMe
 from apps.users.serializers import UserSerializer, UserEditSerializer, \
     AvatarSerializer, UserActivateSerializer
 from core.services.jwt import JwtService, ActivateToken
@@ -16,11 +19,14 @@ from core.services.jwt import JwtService, ActivateToken
 UserModel = get_user_model()
 
 
-class ListCreateUsersView(ListCreateAPIView):
+class ListCreateCustomMixin(ABC):
     queryset = UserModel.objects.all()
     serializer_class = UserSerializer
+
+
+class ListUsersView(ListCreateCustomMixin, ListAPIView):
+    permission_classes = (IsAdminUser, )
     filterset_class = UsersFilter
-    permission_classes = (AllowAny,)
 
     @swagger_auto_schema(
         manual_parameters=pagination_parameters + filtering_parameters,
@@ -29,6 +35,10 @@ class ListCreateUsersView(ListCreateAPIView):
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
+
+
+class CreateUserView(ListCreateCustomMixin, CreateAPIView):
+    permission_classes = (AllowAny,)
 
     @swagger_auto_schema(
         request_body=UserSerializer,
@@ -40,10 +50,13 @@ class ListCreateUsersView(ListCreateAPIView):
         return super().post(request, *args, **kwargs)
 
 
-class UserDetailView(RetrieveUpdateDestroyAPIView):
+class UserDetailCustomMixin(ABC):
     queryset = UserModel.objects.all()
+    permission_classes = (IsAdminUserOrMe,)
+
+
+class UserDetailView(UserDetailCustomMixin, RetrieveUpdateDestroyAPIView):
     serializer_class = UserEditSerializer
-    permission_classes = (AllowAny,)
 
     @swagger_auto_schema(
         operation_summary="Retrieve user details",
@@ -71,7 +84,6 @@ class UserDetailView(RetrieveUpdateDestroyAPIView):
 
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -82,7 +94,7 @@ class UpdateAvatarView(UpdateAPIView):
     """
     serializer_class = AvatarSerializer
     parser_classes = (MultiPartParser,)
-    permission_classes = (AllowAny,)
+    permission_classes = (IsSuperUserOrMe,)
     allowed_methods = ['PATCH']
 
     def get_queryset(self):
@@ -124,7 +136,7 @@ class ActivateUserView(UpdateAPIView):
     """
     queryset = UserModel.objects.all()
     serializer_class = UserActivateSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (IsSuperUserOrMe,)
     http_method_names = ['get']
 
     def get(self, request, *args, **kwargs):

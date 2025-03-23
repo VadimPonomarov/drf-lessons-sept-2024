@@ -4,6 +4,8 @@ services:
       context: ./backend
     volumes:
       - ./backend:/app
+    environment:
+      - APP_CONFIG__IS_DOCKER:1
     env_file:
       - .env
     ports:

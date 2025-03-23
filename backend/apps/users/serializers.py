@@ -3,7 +3,7 @@ from django.db import transaction
 from rest_framework import serializers
 
 from apps.users.models import ProfileModel
-from core.enums.messages import MessagesEnum
+from core.enums.msg import MessagesEnum
 from core.logging.logger_config import logger
 from core.serializers.base import BaseModelSerializer
 from core.serializers.file_upload import FileUploadSerializer
