@@ -3,13 +3,16 @@
 import os
 import sys
 
+import os
 from dotenv import load_dotenv
 
-load_dotenv(
-    ".env.example"
-    if bool(os.environ.get("APP_CONFIG__IS_DOCKER", 0))
-    else ".env"
-)
+# Путь к файлу .env на уровень выше корня проекта
+env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
+load_dotenv(env_path)
+
+# Проверка загрузки переменных
+print("AWS_ACCESS_KEY_ID:", os.getenv("AWS_ACCESS_KEY_ID"))
+
 
 
 def main():
