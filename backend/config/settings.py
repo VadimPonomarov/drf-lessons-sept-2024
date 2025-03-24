@@ -24,7 +24,6 @@ ALLOWED_HOSTS = []
 
 # Application definition
 INSTALLED_APPS = [
-    'django.contrib.admin',
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -114,3 +113,6 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "users.UserModel"
+
+STATIC_URL = '/drf-static/'
+STATIC_ROOT = os.path.join(Path(__file__).resolve().parent.parent, 'static')

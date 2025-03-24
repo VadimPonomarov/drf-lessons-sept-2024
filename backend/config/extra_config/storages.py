@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 # AWS S3/MinIO Configuration
 # AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID", "Z2YOcjak2CaqO8AHxkem")
@@ -19,9 +20,6 @@ MINIO_MEDIA_FILES_BUCKET = "media-bucket"
 
 MINIO_PRIVATE_BUCKETS = ["test-bucket", ]
 MINIO_PUBLIC_BUCKETS = ["media-bucket", "static-bucket"]
-
-STATIC_URL = '/static/'
-STATIC_ROOT = 'drf-static'
 
 MEDIA_URL = f"{MINIO_ENDPOINT}/{MINIO_MEDIA_FILES_BUCKET}/"
 

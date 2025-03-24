@@ -48,7 +48,7 @@ services:
     volumes:
       - ./client:/usr/share/nginx/html
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - ./backend/static:/usr/share/nginx/docs
+      - ./backend/static:/usr/share/nginx/doc
 
   minio:
     image: minio/minio
