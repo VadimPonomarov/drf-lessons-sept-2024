@@ -11,7 +11,7 @@ from apps.users.docs.swagger_params import pagination_parameters, filtering_para
     update_avatar_parameters, update_avatar_responses
 from apps.users.filters import UsersFilter
 from apps.users.models import ProfileModel
-from apps.users.permissions import IsMeUser, IsAdminUserOrMe, IsSuperUserOrMe
+from apps.users.permissions import IsAdminUserOrMe, IsSuperUserOrMe
 from apps.users.serializers import UserSerializer, UserEditSerializer, \
     AvatarSerializer, UserActivateSerializer
 from core.services.jwt import JwtService, ActivateToken
@@ -25,13 +25,13 @@ class ListCreateCustomMixin(ABC):
 
 
 class ListUsersView(ListCreateCustomMixin, ListAPIView):
-    permission_classes = (IsAdminUser, )
+    permission_classes = (IsAdminUser,)
     filterset_class = UsersFilter
 
     @swagger_auto_schema(
         manual_parameters=pagination_parameters + filtering_parameters,
         operation_summary="List users",
-        operation_description="Retrieve a list of users with pagination and filtering."
+        operation_description="Retrieve a list of users with pagination and filtering.",
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
