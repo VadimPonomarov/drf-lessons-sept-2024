@@ -10,5 +10,5 @@ class SendEmailParams(BaseModel):
     subject: str
     to_email: str
     from_email: str = settings.gmail.sender_email
-    template_data: MyTemplateData
+    template_data: dict[str, str]
 

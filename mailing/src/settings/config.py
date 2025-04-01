@@ -83,7 +83,11 @@ class GmailConfig(BaseSettingsBase):
             os.environ.get("APP_CONFIG__GMAIL__HOST_USER")
         )
     )
-    email_host_password: str = "xrfv hsvi jjor ntgz"
+    email_host_password: str = Field(
+        default_factory=lambda: decrypt_message(
+            os.environ.get("APP_CONFIG__GMAIL__PASSWORD")
+        )
+    )
 
     sender_email: str = Field(
         default_factory=lambda: decrypt_message(

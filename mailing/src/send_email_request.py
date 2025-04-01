@@ -11,6 +11,7 @@ if __name__ == "__main__":
     ).publish(
         params=SendEmailParams(
             to_email="pvs.versia@gmail.com",
+            subject="Test Email",
             template_data=MyTemplateData(
                 title="Test Email", message=message, logo_url="cid:logo"
             ).model_dump(),
