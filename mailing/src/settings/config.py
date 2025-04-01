@@ -5,6 +5,7 @@ from celery import Celery
 from dotenv import load_dotenv
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
 from services.encription_service.decrypt_service import decrypt_message
 
 load_dotenv(".env.example")
@@ -74,6 +75,24 @@ class SendgridConfig(BaseSettingsBase):
     )
 
 
+class GmailConfig(BaseSettingsBase):
+    email_server: str = "smtp.gmail.com"
+    email_port: int = 587
+    email_host_user: str = Field(
+        default_factory=lambda: decrypt_message(
+            os.environ.get("APP_CONFIG__GMAIL__HOST_USER")
+        )
+    )
+    email_host_password: str = "xrfv hsvi jjor ntgz"
+
+    sender_email: str = Field(
+        default_factory=lambda: decrypt_message(
+            os.environ.get("APP_CONFIG__GMAIL__HOST_USER")
+        )
+    )
+    email_use_tls: bool = True
+
+
 class Settings(BaseSettingsBase):
     environment: Literal["dev", "prod"] = "dev"
     enable_logging: bool = True
@@ -84,8 +103,8 @@ class Settings(BaseSettingsBase):
     run: RunConfig = RunConfig()
     api: ApiPrefix = ApiPrefix()
     celery_app: CeleryConfig = CeleryConfig()
-    sendgrid: SendgridConfig = SendgridConfig()
     pika: PikaConfig = PikaConfig()
+    gmail: GmailConfig = GmailConfig()
 
 
 settings = Settings()
