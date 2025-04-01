@@ -24,6 +24,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     "core",
     "apps.auth",
     "apps.users",
+    "apps.chat",
 ]
 MIDDLEWARE = [
     "core.middlewares.bearer.AddBearerPrefixMiddleware",
@@ -74,6 +76,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "config.wsgi.application"
+ASGI_APPLICATION = "config.asgi.application"
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

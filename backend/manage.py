@@ -7,9 +7,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Проверка загрузки переменных
-print("AWS_ACCESS_KEY_ID:", os.getenv("AWS_ACCESS_KEY_ID"))
-
 
 def main():
     """Run administrative tasks."""
