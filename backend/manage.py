@@ -21,8 +21,6 @@ def load_env_files():
             logger.info(f"Loading environment variables from {env_file}")
             load_dotenv(dotenv_path=env_path)
             break  # Stop once the first valid .env file is loaded
-        else:
-            logger.info(f"{env_file} not found in {script_dir}")  # Log missing files
     else:
         logger.info("No .env file found. Using default environment variables.")
 
