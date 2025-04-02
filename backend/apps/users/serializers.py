@@ -4,7 +4,7 @@ from rest_framework import serializers
 
 from apps.users.models import ProfileModel
 from core.enums.msg import MessagesEnum
-from core.logging.logger_config import logger
+from config.extra_config.logger_config import logger
 from core.serializers.base import BaseModelSerializer
 from core.serializers.file_upload import FileUploadSerializer
 from core.services.jwt import JwtService, ActivateToken

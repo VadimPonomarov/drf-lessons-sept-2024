@@ -34,7 +34,7 @@ class ApiPrefix(BaseSettingsBase):
 
 
 class CeleryConfig(BaseSettingsBase):
-    celery_broker: str = "pyamqp://guest:guest@rabbitmq:5672//"
+    celery_broker: str = "pyamqp://guest:guest@localhost//"
     celery_backend: str = "rpc://"
     celery_include: str = "services.mail_services"
 
@@ -63,18 +63,6 @@ class PikaConfig(BaseSettingsBase):
     connection_param: str | None = None
 
 
-class SendgridConfig(BaseSettingsBase):
-    api_key: str = Field(
-        default_factory=lambda: decrypt_message(
-            os.environ.get("APP_CONFIG__SENDGRID__API_KEY")
-        )
-    )
-    my_email: str = Field(
-        default_factory=lambda: decrypt_message(
-            os.environ.get("APP_CONFIG__SENDGRID__MY_EMAIL"))
-    )
-
-
 class GmailConfig(BaseSettingsBase):
     email_server: str = "smtp.gmail.com"
     email_port: int = 587
@@ -99,8 +87,9 @@ class GmailConfig(BaseSettingsBase):
 
 class Settings(BaseSettingsBase):
     environment: Literal["dev", "prod"] = "dev"
-    enable_logging: bool = True
-    log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
+    loguru: bool = Field(default_factory=lambda: bool(os.environ.get("LOGURU", "True")))
+    log_level: Literal[
+        "TRACE", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
     log_directory: str = "./logs"
     media_path: str | None = "./media"
     templates_path: str | None = "./templates"

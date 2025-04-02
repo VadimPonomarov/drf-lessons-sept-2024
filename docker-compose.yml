@@ -14,9 +14,6 @@ services:
       MINIO_ENDPOINT: "${MINIO_ENDPOINT:-minio:9000}"
       MINIO_ACCESS_KEY: "${MINIO_ACCESS_KEY:-root}"
       MINIO_SECRET_KEY: "${MINIO_SECRET_KEY:-password}"
-    env_file:
-      - .env.example
-      - .env
     ports:
       - "8888:8000"
     restart: on-failure
@@ -54,9 +51,9 @@ services:
   minio:
     image: minio/minio
     container_name: minio
-    env_file:
-      - .env.example
-      - .env
+    environment:
+      MINIO_ROOT_USER: "${MINIO_ACCESS_KEY:-root}"
+      MINIO_ROOT_PASSWORD: "${MINIO_SECRET_KEY:-password}"
     ports:
       - "9000:9000"    # MinIO API
       - "9001:9001"    # MinIO console
@@ -69,10 +66,8 @@ services:
   mailing:
     build: ./mailing
     environment:
-      - APP_CONFIG__DOCKER=True
-    env_file:
-      - ./mailing/src/.env.example
-      - ./mailing/src/.env
+      DOCKER: True
+      CELERY_BROKER: "${APP_CONFIG__CELERY_BROKER:-pyamqp://guest:guest@rabbitmq:5672//}"
     ports:
       - "8001:8000"
     depends_on:
@@ -89,9 +84,6 @@ services:
     image: rabbitmq:management-alpine
     hostname: rabbitmq
     restart: always
-    env_file:
-      - .env.example
-      - .env
     volumes:
       - ./rabbitmq:/var/lib/rabbitmq
     ports:
@@ -104,9 +96,8 @@ services:
       context: ./mailing
     volumes:
       - ./mailing/src:/app
-    env_file:
-      - .env.example
-      - .env
+    environment:
+      CELERY_BROKER: "${APP_CONFIG__CELERY_BROKER:-pyamqp://guest:guest@rabbitmq:5672//}"
     restart: always
     depends_on:
       - rabbitmq

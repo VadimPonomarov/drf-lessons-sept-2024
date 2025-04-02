@@ -25,7 +25,7 @@ from apps.users.serializers import (
     UserPasswordSerializer
 )
 from core.enums.msg import MessagesEnum
-from core.logging.logger_config import logger
+from config.extra_config.logger_config import logger
 from core.services.jwt import JwtService, ActivateToken, ChangePasswordToken
 from core.services.send_email import send_email_service
 

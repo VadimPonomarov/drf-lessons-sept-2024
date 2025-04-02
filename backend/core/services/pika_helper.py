@@ -7,7 +7,7 @@ from pika.spec import Basic
 
 from core.enums.pika import ExchangeType, QueueType
 from core.schemas.email import SendEmailParams
-from core.logging.logger_config import logger
+from config.extra_config.logger_config import logger
 
 if TYPE_CHECKING:
     from pika.connection import ConnectionParameters

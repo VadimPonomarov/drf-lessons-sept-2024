@@ -2,7 +2,7 @@ from typing import Literal
 
 from pika import ConnectionParameters
 
-from core.logging.logger_config import logger
+from config.extra_config.logger_config import logger
 from core.schemas.email import SendEmailParams, MyTemplateData
 from core.services.pika_helper import ConnectionFactory
 

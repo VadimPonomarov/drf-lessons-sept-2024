@@ -1,6 +1,6 @@
 from djangochannelsrestframework.generics import GenericAsyncAPIConsumer
 
-from core.logging.logger_config import logger
+from config.extra_config.logger_config import logger
 
 
 class ChatConsumer(GenericAsyncAPIConsumer):
