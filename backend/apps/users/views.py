@@ -229,7 +229,6 @@ class ResetPasswordTokenView(RetrieveAPIView):
         operation_summary="Request password reset token",
         operation_description="Generate and send a token to reset a user's password."
     )
-
     @transaction.atomic
     def get(self, request, *args, **kwargs):
         try:
@@ -272,8 +271,7 @@ class ResetPasswordView(UpdateAPIView):
             )
 
         try:
-            user_data = JwtService.verify_token(token, ChangePasswordToken)
-            user = get_object_or_404(UserModel, pk=user_data.id)
+            user = JwtService.verify_token(token, ChangePasswordToken)
         except Exception as e:
             return Response({"error": f"Invalid token: {str(e)}"},
                             status=status.HTTP_400_BAD_REQUEST)

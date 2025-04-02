@@ -91,7 +91,7 @@ class UserEditSerializer(UserSerializer):
 
 
 class UserPasswordSerializer(BaseModelSerializer):
-    token = serializers.CharField(required=False)
+    token = serializers.CharField(required=True)
 
     class Meta(BaseModelSerializer.Meta):
         model = UserModel
