@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-from pathlib import Path
 
 from .extra_config import *  # noqa
 from .extra_config.storages import *  # noqa
@@ -18,8 +17,7 @@ BASE_DIR = Path(__file__).resolve().parents[2]
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "secret_key")
 
-DEBUG = bool(os.environ.get("DEBUG", 0))
-
+DEBUG = os.environ.get("DEBUG") == "True"
 ALLOWED_HOSTS = []
 
 # Application definition

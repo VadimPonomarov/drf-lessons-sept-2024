@@ -16,6 +16,7 @@ services:
       MINIO_SECRET_KEY: "${MINIO_SECRET_KEY:-password}"
     env_file:
       - .env.example
+      - .env
     ports:
       - "8888:8000"
     restart: on-failure
@@ -55,6 +56,7 @@ services:
     container_name: minio
     env_file:
       - .env.example
+      - .env
     ports:
       - "9000:9000"    # MinIO API
       - "9001:9001"    # MinIO console
@@ -70,6 +72,7 @@ services:
       - APP_CONFIG__DOCKER=True
     env_file:
       - ./mailing/src/.env.example
+      - ./mailing/src/.env
     ports:
       - "8001:8000"
     depends_on:
@@ -88,6 +91,7 @@ services:
     restart: always
     env_file:
       - .env.example
+      - .env
     volumes:
       - ./rabbitmq:/var/lib/rabbitmq
     ports:
@@ -102,6 +106,7 @@ services:
       - ./mailing/src:/app
     env_file:
       - .env.example
+      - .env
     restart: always
     depends_on:
       - rabbitmq
