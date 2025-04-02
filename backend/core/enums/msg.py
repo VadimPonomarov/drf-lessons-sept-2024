@@ -5,7 +5,7 @@ from config.extra_config import BASE_URL
 
 class MessagesEnum(Enum):
     EMAIL_ACTIVATE = "Activate your account: {BASE_URL}/{resource}?token={token}"
-    PASSWORD_RESET = "Reset your password using this link: {BASE_URL}/{resource}?token={token}"
+    PASSWORD_RESET = "Reset password token: {token}"
     WELCOME_MESSAGE = "Welcome {username}! Visit {BASE_URL} to start."
 
     def get_message(self, **kwargs):

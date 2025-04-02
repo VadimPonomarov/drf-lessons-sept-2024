@@ -85,3 +85,19 @@ update_avatar_responses = {
     ),
 }
 
+# Responses for avatar DELETE
+delete_avatar_responses = {
+    200: openapi.Response(
+         description="Avatar deleted successfully.",
+         schema=openapi.Schema(
+             type=openapi.TYPE_OBJECT,
+             properties={
+                 'message': openapi.Schema(
+                     type=openapi.TYPE_STRING,
+                     description="Deletion confirmation message."
+                 )
+             }
+         )
+    ),
+    404: "Profile not found."
+}

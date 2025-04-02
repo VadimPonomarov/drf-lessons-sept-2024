@@ -1,14 +1,13 @@
 from typing import Literal
 
 from pika import ConnectionParameters
-from pydantic import EmailStr
 
 from core.logging.logger_config import logger
 from core.schemas.email import SendEmailParams, MyTemplateData
 from core.services.pika_helper import ConnectionFactory
 
 
-def send_email_service(to_email: EmailStr, title: str, message: str,
+def send_email_service(to_email: str, title: str, message: str,
                        queue_name: str = "email_queue",
                        connection_parameters: Literal[
                            "localhost", "rabbitmq"] = "rabbitmq"):
@@ -20,6 +19,7 @@ def send_email_service(to_email: EmailStr, title: str, message: str,
         .publish(
             params=SendEmailParams(
                 to_email=to_email,
+                subject=title,
                 template_data=MyTemplateData(
                     title=title, message=message,
                     logo_url="cid:logo"

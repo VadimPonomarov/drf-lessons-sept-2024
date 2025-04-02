@@ -90,6 +90,14 @@ class UserEditSerializer(UserSerializer):
         fields = ("email", "profile")
 
 
+class UserPasswordSerializer(BaseModelSerializer):
+    token = serializers.CharField(required=False)
+
+    class Meta(BaseModelSerializer.Meta):
+        model = UserModel
+        fields = ("password", "token")
+
+
 class UserActivateSerializer(BaseModelSerializer):
     class Meta(BaseModelSerializer.Meta):
         model = UserModel
