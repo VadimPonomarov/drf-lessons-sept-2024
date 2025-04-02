@@ -6,9 +6,9 @@ log_directory = os.environ.get("LOG_DIRECTORY", "./logs")
 os.makedirs(log_directory, exist_ok=True)
 
 enable_logging = (
-        os.environ.get("ENABLE_LOGGING", "False").lower() not in ["false",
-                                                                  "0",
-                                                                  "no"])
+        os.environ.get("ENABLE_LOGGING", "False").lower()
+        not in ["false", "0", "no"]
+)
 if not enable_logging:
     logger.disable("")
 
