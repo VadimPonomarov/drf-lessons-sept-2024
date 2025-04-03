@@ -114,17 +114,3 @@ services:
     ports:
       - "5555:5555"
     command: [ "flower", "--broker=pyamqp://guest:guest@rabbitmq:5672//", "--port=5555" ]
-
-#  adminer:
-#    image: adminer
-#    ports:
-#      - "8080:8080"
-#
-#  pgadmin:
-#    image: dpage/pgadmin4
-#    environment:
-#      PGADMIN_DEFAULT_EMAIL: admin@admin.org
-#      PGADMIN_DEFAULT_PASSWORD: admin
-#      PGADMIN_CONFIG_SERVER_MODE: 'False'
-#    ports:
-#      - "5050:80"
