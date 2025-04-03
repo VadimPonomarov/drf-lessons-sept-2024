@@ -6,9 +6,9 @@ from rest_framework.generics import (
     UpdateAPIView, get_object_or_404,
     RetrieveAPIView
 )
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
+from apps.users.permissions import IsMeUser
 from apps.users.serializers import (
     UserSerializer, UserPasswordSerializer
 )
@@ -26,7 +26,7 @@ class ResetPasswordTokenView(RetrieveAPIView):
     """
     queryset = UserModel.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (IsMeUser,)
 
     @swagger_auto_schema(
         operation_summary="Request password reset token",
@@ -56,7 +56,7 @@ class ResetPasswordView(UpdateAPIView):
     queryset = UserModel.objects.all()
     serializer_class = UserPasswordSerializer
     allowed_methods = ['PATCH']
-    permission_classes = (AllowAny,)
+    permission_classes = (IsMeUser,)
 
     @swagger_auto_schema(
         request_body=UserPasswordSerializer,

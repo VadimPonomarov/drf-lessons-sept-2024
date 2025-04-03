@@ -1,5 +1,3 @@
-from abc import ABC
-
 from django.contrib.auth import get_user_model
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.generics import (
@@ -19,18 +17,12 @@ from apps.users.serializers import (
 UserModel = get_user_model()
 
 
-class ListCreateCustomMixin(ABC):
-    """
-    Base mixin for list and create user operations.
-    """
-    queryset = UserModel.objects.all()
-    serializer_class = UserSerializer
-
-
-class ListUsersView(ListCreateCustomMixin, ListAPIView):
+class ListUsersView(ListAPIView):
     """
     Retrieve a list of users with pagination and filtering.
     """
+    queryset = UserModel.objects.all()
+    serializer_class = UserSerializer
     permission_classes = (IsAdminUser,)
     filterset_class = UsersFilter
 
@@ -43,10 +35,12 @@ class ListUsersView(ListCreateCustomMixin, ListAPIView):
         return super().get(request, *args, **kwargs)
 
 
-class CreateUserView(ListCreateCustomMixin, CreateAPIView):
+class CreateUserView(CreateAPIView):
     """
     Create a new user with profile data and an avatar file upload.
     """
+    queryset = UserModel.objects.all()
+    serializer_class = UserSerializer
     permission_classes = (AllowAny,)
 
     @swagger_auto_schema(

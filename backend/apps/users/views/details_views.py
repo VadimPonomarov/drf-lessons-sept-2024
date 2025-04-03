@@ -1,31 +1,23 @@
-from abc import ABC
-
 from django.contrib.auth import get_user_model
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.generics import (
     RetrieveUpdateDestroyAPIView, )
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
+from apps.users.permissions import IsSuperUserOrMe
 from apps.users.serializers import UserEditSerializer
 
 UserModel = get_user_model()
 
 
-class UserDetailCustomMixin(ABC):
-    """
-    Base mixin for user detail-related operations.
-    """
-    queryset = UserModel.objects.all()
-    permission_classes = (AllowAny,)
-
-
-class UserDetailView(UserDetailCustomMixin, RetrieveUpdateDestroyAPIView):
+class UserDetailView(RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update, or delete a specific user.
     """
+    queryset = UserModel.objects.all()
     serializer_class = UserEditSerializer
+    permission_classes = (IsSuperUserOrMe,)
 
     @swagger_auto_schema(
         operation_summary="Retrieve user details",

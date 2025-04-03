@@ -1,21 +1,20 @@
-from abc import ABC
-
 from django.contrib.auth import get_user_model
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import (
-    RetrieveUpdateDestroyAPIView, UpdateAPIView, get_object_or_404,
+    UpdateAPIView, get_object_or_404,
 )
 from rest_framework.response import Response
 
-from apps.users.permissions import IsAdminUserOrMe, IsSuperUserOrMe
+from apps.users.permissions import IsSuperUserOrMe
 from apps.users.serializers import (
-    UserEditSerializer, AvatarSerializer, UserActivateSerializer,
+    UserActivateSerializer,
 )
 from core.services.jwt import JwtService, ActivateToken
 
 UserModel = get_user_model()
+
 
 class ActivateUserView(UpdateAPIView):
     """
