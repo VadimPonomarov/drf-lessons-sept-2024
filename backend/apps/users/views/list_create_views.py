@@ -51,7 +51,8 @@ class CreateUserView(CreateAPIView):
         request_body=UserSerializer,
         operation_summary="Create a user",
         operation_description="Create a new user and upload an avatar file.",
-        consumes=["multipart/form-data"]
+        consumes=["multipart/form-data"],
+        security=[],
     )
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
