@@ -29,6 +29,7 @@ class ResetPasswordTokenView(RetrieveAPIView):
     permission_classes = (IsMeUser,)
 
     @swagger_auto_schema(
+        tags=["auth"],
         operation_summary="Request password reset token",
         operation_description="Generate and send a token to reset a user's password."
     )
@@ -59,6 +60,7 @@ class ResetPasswordView(UpdateAPIView):
     permission_classes = (IsMeUser,)
 
     @swagger_auto_schema(
+        tags=["auth"],
         request_body=UserPasswordSerializer,
         operation_summary="Reset password",
         operation_description="Reset the user's password using a token and a new password."

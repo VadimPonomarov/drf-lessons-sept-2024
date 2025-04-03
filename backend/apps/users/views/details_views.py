@@ -20,6 +20,7 @@ class UserDetailView(RetrieveUpdateDestroyAPIView):
     permission_classes = (IsSuperUserOrMe,)
 
     @swagger_auto_schema(
+        tags=["user"],
         operation_summary="Retrieve user details",
         operation_description="Retrieve detailed information about a specific user."
     )
@@ -27,6 +28,7 @@ class UserDetailView(RetrieveUpdateDestroyAPIView):
         return super().get(request, *args, **kwargs)
 
     @swagger_auto_schema(
+        tags=["user"],
         request_body=UserEditSerializer,
         operation_summary="Update user details",
         operation_description="Update details of a specific user, including uploading a new avatar.",
@@ -42,6 +44,7 @@ class UserDetailView(RetrieveUpdateDestroyAPIView):
                         status=status.HTTP_200_OK)  # Return the updated object
 
     @swagger_auto_schema(
+        tags=["user"],
         operation_summary="Delete user",
         operation_description="Delete a specific user."
     )

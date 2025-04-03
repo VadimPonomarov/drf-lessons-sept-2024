@@ -34,8 +34,10 @@ class UpdateAvatarView(RetrieveUpdateDestroyAPIView):
         return ProfileModel.objects.filter(user_id=user_id)
 
     @swagger_auto_schema(
-        operation_id="update_avatar",
-        operation_description="Update the avatar of a user's profile using user_id (pk).",
+        tags=["profile"],
+        operation_id="upload_avatar",
+        operation_description="Upload avatar of user's profile using "
+                              "user_id (pk).",
         manual_parameters=update_avatar_parameters,
         responses=update_avatar_responses,
         consumes=["multipart/form-data"]
@@ -59,6 +61,7 @@ class UpdateAvatarView(RetrieveUpdateDestroyAPIView):
         return Response({"avatar_url": profile.avatar.url}, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(
+        tags=["profile"],
         operation_id="delete_avatar",
         operation_description="Delete the avatar of a user's profile using user_id (pk).",
         responses=delete_avatar_responses

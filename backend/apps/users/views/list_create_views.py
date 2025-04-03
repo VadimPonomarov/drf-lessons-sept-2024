@@ -25,8 +25,10 @@ class ListUsersView(ListAPIView):
     serializer_class = UserSerializer
     permission_classes = (IsAdminUser,)
     filterset_class = UsersFilter
+    allowed_methods = ['GET']
 
     @swagger_auto_schema(
+        tags=["users"],
         manual_parameters=pagination_parameters + filtering_parameters,
         operation_summary="List users",
         operation_description="Retrieve a list of users with pagination and filtering options."
@@ -42,8 +44,10 @@ class CreateUserView(CreateAPIView):
     queryset = UserModel.objects.all()
     serializer_class = UserSerializer
     permission_classes = (AllowAny,)
+    allowed_methods = ['POST']
 
     @swagger_auto_schema(
+        tags=["user"],
         request_body=UserSerializer,
         operation_summary="Create a user",
         operation_description="Create a new user and upload an avatar file.",

@@ -26,6 +26,7 @@ class ActivateUserView(UpdateAPIView):
     http_method_names = ['get']
 
     @swagger_auto_schema(
+        tags=["auth"],
         operation_summary="Activate a user",
         operation_description="Activate a user by verifying a token passed as a query parameter."
     )
