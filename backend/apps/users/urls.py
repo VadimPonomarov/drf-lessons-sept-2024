@@ -1,7 +1,11 @@
 from django.urls.conf import path
 
-from apps.users.views import ListUsersView, CreateUserView, UserDetailView, \
-    UpdateAvatarView, ActivateUserView, ResetPasswordTokenView, ResetPasswordView
+from apps.users.views.activate_views import ActivateUserView
+from apps.users.views.avatar_views import UpdateAvatarView
+from apps.users.views.details_views import UserDetailView
+from apps.users.views.list_create_views import ListUsersView, CreateUserView
+from apps.users.views.reset_password_views import ResetPasswordTokenView, \
+    ResetPasswordView
 
 urlpatterns = [
     path("", ListUsersView.as_view(), name="users_list"),

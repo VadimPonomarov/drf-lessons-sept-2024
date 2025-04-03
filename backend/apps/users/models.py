@@ -16,7 +16,7 @@ class ProfileModel(BaseModel):
     age = models.IntegerField(null=True)
     avatar = models.ImageField(
         upload_to=iso_date_prefix,
-        storage=MinioBackend(bucket_name="test-bucket"),
+        storage=MinioBackend(bucket_name="media-bucket"),
         blank=True,
     )
     user = models.OneToOneField("UserModel", on_delete=models.CASCADE,

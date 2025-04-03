@@ -11,7 +11,6 @@ services:
       POSTGRES_USER: "${POSTGRES_USER:-user}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-password}"
 
-      MINIO_ENDPOINT: "${MINIO_ENDPOINT:-minio:9000}"
       MINIO_ACCESS_KEY: "${MINIO_ACCESS_KEY:-root}"
       MINIO_SECRET_KEY: "${MINIO_SECRET_KEY:-password}"
     ports:
@@ -57,6 +56,8 @@ services:
     ports:
       - "9000:9000"    # MinIO API
       - "9001:9001"    # MinIO console
+    extra_hosts:
+      - "minio:127.0.0.1"
     volumes:
       - ./minio/data:/data                  # MinIO data storage
       - ./minio/config:/root/.minio         # MinIO configuration

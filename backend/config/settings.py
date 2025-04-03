@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
+from pathlib import Path
 
 from .extra_config import *  # noqa
 from .extra_config.storages import *  # noqa
@@ -17,7 +18,7 @@ BASE_DIR = Path(__file__).resolve().parents[2]
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "secret_key")
 
-DEBUG = os.environ.get("DEBUG") == "True"
+DEBUG = os.environ.get("DEBUG", "True") == "True"
 ALLOWED_HOSTS = []
 
 # Application definition
@@ -117,3 +118,6 @@ AUTH_USER_MODEL = "users.UserModel"
 
 STATIC_URL = '/drf-static/'
 STATIC_ROOT = os.path.join(Path(__file__).resolve().parent.parent, 'static')
+
+MEDIA_URL = '/media-bucket/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
