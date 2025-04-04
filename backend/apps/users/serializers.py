@@ -55,8 +55,6 @@ class UserSerializer(BaseModelSerializer):
             profile_data = validated_data.pop("profile", None)
             user = UserModel(**validated_data)
             user.set_password(validated_data["password"])
-            # Run model-level validation
-            user.full_clean()
             user.save()
 
             if profile_data:
