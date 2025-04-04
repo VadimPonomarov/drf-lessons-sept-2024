@@ -11,31 +11,31 @@ class ErrorType(Enum):
     BAD_REQUEST = {
         "exceptions": [KeyError, ValueError],
         "code": "bad_request",
-        "message": "Некорректный запрос.",
+        "message": "Bad request.",
         "status": status.HTTP_400_BAD_REQUEST,
     }
     PERMISSION_DENIED = {
         "exceptions": [PermissionDenied],
         "code": "permission_denied",
-        "message": "Недостаточно прав.",
+        "message": "Insufficient permissions.",
         "status": status.HTTP_403_FORBIDDEN,
     }
     JWT_ERROR = {
         "exceptions": [JwtException],
         "code": "jwt_error",
-        "message": "Ошибка аутентификации JWT.",
+        "message": "JWT authentication error.",
         "status": status.HTTP_401_UNAUTHORIZED,
     }
     NOT_FOUND = {
         "exceptions": [FileNotFoundError],
         "code": "not_found",
-        "message": "Ресурс не найден.",
+        "message": "Resource not found.",
         "status": status.HTTP_404_NOT_FOUND,
     }
     SERVER_ERROR = {
-        "exceptions": None,  # Этот тип используется для случаев, не указанных явно
+        "exceptions": None,  # This type is used for cases not explicitly specified.
         "code": "server_error",
-        "message": "Произошла ошибка на сервере.",
+        "message": "A server error occurred.",
         "status": status.HTTP_500_INTERNAL_SERVER_ERROR,
     }
 
@@ -44,23 +44,23 @@ class ErrorType(Enum):
         self.code = data["code"]
         self.message = data["message"]
         self.http_status = data["status"]
-        # Автоматически создаём обработчик, который использует self.message для error_message
+        # Automatically build a handler that uses self.message for the error_message.
         self.handler = self._build_handler()
 
     def _build_handler(self):
-        """Возвращает функцию-обработчик, использующую атрибуты объекта для формирования ответа."""
+        """Returns a handler function that uses the object's attributes to create the HTTP response."""
         return lambda exc: Response({
             "error_code": self.code,
-            "error_message": self.message,  # Используем значение message
+            "error_message": self.message,
             "details": str(exc)
         }, status=self.http_status)
 
     @staticmethod
     def get_by_exception(exc):
         """
-        Перебирает элементы ErrorType и, если выброшенное исключение является экземпляром одного из типов,
-        указанных в поле "exceptions", возвращает соответствующий элемент.
-        Если исключение не соответствует ни одному типу – возвращает SERVER_ERROR.
+        Iterates through the ErrorType elements and returns the corresponding element
+        if the raised exception is an instance of one of the types specified in "exceptions".
+        If the exception does not match any type, returns SERVER_ERROR.
         """
         for error_type in ErrorType:
             if error_type.exceptions and any(
@@ -69,5 +69,5 @@ class ErrorType(Enum):
         return ErrorType.SERVER_ERROR
 
     def handle_exception(self, exc):
-        """Вызывает обработчик для формирования HTTP-ответа."""
+        """Calls the handler to create an HTTP response."""
         return self.handler(exc)
