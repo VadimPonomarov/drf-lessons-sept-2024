@@ -1,5 +1,6 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
+from django.core.validators import MaxValueValidator, EmailValidator
 from django.db import models
 from django_minio_backend import MinioBackend, iso_date_prefix
 
@@ -13,7 +14,8 @@ class ProfileModel(BaseModel):
 
     name = models.CharField(max_length=255, blank=True)
     surname = models.CharField(max_length=255, blank=True)
-    age = models.IntegerField(null=True)
+    age = models.IntegerField(null=True, validators=[
+        MaxValueValidator(100, message="Invalid age")])
     avatar = models.ImageField(
         upload_to=iso_date_prefix,
         storage=MinioBackend(bucket_name="media-bucket"),
@@ -27,7 +29,8 @@ class UserModel(AbstractBaseUser, PermissionsMixin, BaseModel):
     class Meta(BaseModel.Meta):
         db_table = "auth_user"
 
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, validators=[
+        EmailValidator(message="Invalid email address")])
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
