@@ -121,3 +121,5 @@ STATIC_ROOT = os.path.join(Path(__file__).resolve().parent.parent, 'static')
 
 MEDIA_URL = '/media-bucket/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+APPEND_SLASH = False
