@@ -9,13 +9,12 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
         'rest_framework.authentication.SessionAuthentication',
     ],
-    "DEFAULT_PERMISSION_CLASSES": ["apps.users.permissions.IsSuperuser"],
+    "DEFAULT_PERMISSION_CLASSES": ['apps.users.permissions.IsSuperuser'],
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
         'rest_framework.parsers.MultiPartParser',
         'rest_framework.parsers.FormParser',
     ],
     'EXCEPTION_HANDLER': 'core.exceptions.handler.custom_exception_handler',
-
 
 }

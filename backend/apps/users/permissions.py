@@ -3,12 +3,10 @@ from rest_framework.permissions import BasePermission
 
 class BaseUserPermission(BasePermission):
     """
-    Base class for user-related permissions, enforcing shared logic for authentication
-    and requiring the user to be active.
+    Base class for user-related permissions with shared utility methods.
+    It ensures that the user is authenticated and active.
     """
-
     def is_authenticated(self, request):
-        # Check if the user is authenticated AND active
         return request.user and request.user.is_authenticated and request.user.is_active
 
     def is_superuser(self, request):
@@ -22,57 +20,55 @@ class IsSuperuser(BaseUserPermission):
     """
     Permission that grants access only to superusers.
     """
-
     def has_permission(self, request, view):
         return self.is_superuser(request)
 
 
 class IsMeUser(BaseUserPermission):
     """
-    Permission that grants access only if the authenticated user's ID matches the `pk` parameter in the URL.
+    Permission that grants access only if the object corresponds to the authenticated user.
     """
-
     def has_permission(self, request, view):
         return self.is_authenticated(request)
 
     def has_object_permission(self, request, view, obj):
-        pk = view.kwargs.get("pk")  # Retrieve `pk` from URL parameters
-        return str(request.user.id) == str(pk)  # Allow access to own data
+        # Allow access only if the user is the same as the object.
+        return request.user == obj
 
 
 class IsSuperUserOrMe(BaseUserPermission):
     """
-    Permission that grants access to superusers or if the authenticated user's ID matches the `pk` in the URL.
+    Permission that grants access if the authenticated user is a superuser
+    or if the authenticated user is the same as the object being accessed.
     """
 
     def has_permission(self, request, view):
+        # Check if the user is authenticated for basic access.
+        print(f"User authenticated: {request.user.is_authenticated}")
         return self.is_authenticated(request)
 
     def has_object_permission(self, request, view, obj):
-        if self.is_superuser(request):  # Superusers always have access
-            return True
-        pk = view.kwargs.get("pk")  # Retrieve `pk` from URL parameters
-        return str(request.user.id) == str(pk)  # Allow access to own data
+        # Debugging logs.
+        print(f"Authenticated user: {request.user}")
+        print(f"Target object: {obj}")
+        print(f"Superuser status: {self.is_superuser(request)}")
+
+        # Grant access if the user is a superuser or the user is the same as the object.
+        return self.is_superuser(request) or (request.user == obj)
 
 
 class IsStaffUserOrMe(BaseUserPermission):
     """
-    Permission that grants access to staff users or active authenticated users whose ID matches the `pk` in the URL.
+    Permission that grants access to superusers or staff users, or if the object corresponds
+    to the authenticated user.
     """
-
     def has_permission(self, request, view):
-        # Allow access to staff users or authenticated and active users
-        return self.is_staff(request) or self.is_authenticated(request)
+        return self.is_authenticated(request)
 
     def has_object_permission(self, request, view, obj):
-        # Allow access to superusers
-        if self.is_superuser(request):
+        # Grant all access if user is a superuser or staff.
+        if self.is_superuser(request) or self.is_staff(request):
             return True
+        # Otherwise, allow only if the user is the same as the object.
+        return request.user == obj
 
-        # Allow access to staff users
-        if self.is_staff(request):
-            return True
-
-        # Allow access to active users if `pk` matches their user ID
-        pk = view.kwargs.get("pk")  # Retrieve `pk` from URL parameters
-        return str(request.user.id) == str(pk)
