@@ -1,6 +1,8 @@
 from enum import Enum
-from rest_framework.response import Response
+
 from rest_framework import status
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.response import Response
 
 from core.exceptions.jwt import JwtException
 
@@ -11,6 +13,12 @@ class ErrorType(Enum):
         "code": "bad_request",
         "message": "Некорректный запрос.",
         "status": status.HTTP_400_BAD_REQUEST,
+    }
+    PERMISSION_DENIED = {
+        "exceptions": [PermissionDenied],
+        "code": "permission_denied",
+        "message": "Недостаточно прав.",
+        "status": status.HTTP_403_FORBIDDEN,
     }
     JWT_ERROR = {
         "exceptions": [JwtException],
@@ -55,7 +63,8 @@ class ErrorType(Enum):
         Если исключение не соответствует ни одному типу – возвращает SERVER_ERROR.
         """
         for error_type in ErrorType:
-            if error_type.exceptions and any(isinstance(exc, exc_type) for exc_type in error_type.exceptions):
+            if error_type.exceptions and any(
+                    isinstance(exc, exc_type) for exc_type in error_type.exceptions):
                 return error_type
         return ErrorType.SERVER_ERROR
 

@@ -3,8 +3,8 @@ from django.db import transaction
 from rest_framework import serializers
 
 from apps.users.models import ProfileModel
-from core.enums.msg import MessagesEnum
 from config.extra_config.logger_config import logger
+from core.enums.msg import MessagesEnum
 from core.serializers.base import BaseModelSerializer
 from core.serializers.file_upload import FileUploadSerializer
 from core.services.jwt import JwtService, ActivateToken
@@ -55,6 +55,8 @@ class UserSerializer(BaseModelSerializer):
             profile_data = validated_data.pop("profile", None)
             user = UserModel(**validated_data)
             user.set_password(validated_data["password"])
+            # Run model-level validation
+            user.full_clean()
             user.save()
 
             if profile_data:

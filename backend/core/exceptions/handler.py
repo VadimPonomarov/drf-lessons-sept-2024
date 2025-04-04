@@ -1,26 +1,25 @@
 from rest_framework.views import exception_handler
-
-from core.enums.exceptions import ErrorType
+from rest_framework.response import Response
+from rest_framework import status, exceptions
 
 
 def custom_exception_handler(exc, context):
     """
-    Кастомный обработчик исключений, который:
-    – пытается определить тип ошибки через ErrorType.get_by_exception;
-    – если найден элемент Enum, возвращает Response через его handler;
-    – для остальных случаев использует стандартный exception_handler.
+    Custom exception handler that:
+    - Forces NotAuthenticated and PermissionDenied exceptions to return a 403 Forbidden.
+    - Defers to DRF's default exception_handler for known exceptions (such as ValidationError),
+      so that detailed error responses are returned.
+    - Returns a minimal error response with status 400 for any other unexpected exception.
     """
-    # Попытка сопоставить выброшенное исключение с элементом ErrorType
-    error_type = ErrorType.get_by_exception(exc)
-    response = error_type.handle_exception(exc)
+    # Force unauthenticated and unauthorized errors to 403.
+    if isinstance(exc, (exceptions.NotAuthenticated, exceptions.PermissionDenied)):
+        detail = exc.detail if hasattr(exc, "detail") else str(exc)
+        return Response({"detail": detail}, status=status.HTTP_403_FORBIDDEN)
 
-    # Дополнительно можно вызвать стандартный handler – если он вернул ответ, можно объединить данные.
-    # Если стандартный handler не справился (вернул None) или вы предпочитаете полностью заменять ответ,
-    # можно сразу вернуть response.
-    std_response = exception_handler(exc, context)
-    if std_response is not None:
-        # Здесь можно объединять или модифицировать ответ.
-        # Например, добавить стандартные детали или логирование.
+    # Use DRF's default exception handler for known errors (e.g. ValidationError).
+    response = exception_handler(exc, context)
+    if response is not None:
         return response
-    else:
-        return response
+
+    # For any unexpected exceptions, return a minimal error response.
+    return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
