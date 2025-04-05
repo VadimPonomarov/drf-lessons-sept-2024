@@ -12,7 +12,7 @@ urlpatterns = [
     path("create/", CreateUserView.as_view(), name="user_create"),
     path('activate/', ActivateUserView.as_view(), name='user_activate'),
     path("<int:pk>/", UserDetailView.as_view(), name="user_crud"),
-    path('profile/avatar/<int:pk>/', UpdateAvatarView.as_view(),
+    path('<int:pk>/profile/avatar/', UpdateAvatarView.as_view(),
          name='user_profile_upload_avatar'),
     path('<int:pk>/reset-password-token/', ResetPasswordTokenView.as_view(),
          name='reset_password_token'),

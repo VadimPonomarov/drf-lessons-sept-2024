@@ -65,6 +65,7 @@ class UpdateAvatarView(RetrieveUpdateDestroyAPIView):
     def delete(self, request, *args, **kwargs):
         user_id = self.kwargs.get("pk")
         profile = get_object_or_404(ProfileModel, user_id=user_id)
-        profile.avatar.delete()
+        profile.avatar = None
+        profile.save()
         return Response({"message": "Avatar deleted successfully"},
                         status=status.HTTP_200_OK)
