@@ -44,12 +44,23 @@ def test_reset_password_token_inactive_user(inactive_user):
     assert response.status_code == status.HTTP_403_FORBIDDEN  # Permission failure expected.
 
 
-
 @pytest.mark.django_db
-def test_reset_password_token_unauthenticated(active_user):
+def test_reset_password_token_unauthorized(active_user):
     client = APIClient()
     url = f"/api/users/{active_user.pk}/reset-password-token/"
     response = client.get(url)
+    assert response.status_code == status.HTTP_403_FORBIDDEN  # Permission failure expected.
+
+
+@pytest.mark.django_db
+def test_reset_password_token_expired_token(active_user):
+    """
+    Test that a request with an expired token returns 401 Unauthorized.
+    """
+    client = APIClient()
+    expired_token = "expired_test_token"  # Simulate an expired token
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {expired_token}")
+    url = f"/api/users/{active_user.pk}/reset-password-token/"
+    response = client.get(url)
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
-
-
+    assert response.data.get("detail") == "Given token not valid for any token type"
