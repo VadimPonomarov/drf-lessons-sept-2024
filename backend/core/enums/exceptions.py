@@ -1,6 +1,8 @@
 from enum import Enum
+
 from rest_framework import status
-from rest_framework.exceptions import PermissionDenied, NotFound, ValidationError, AuthenticationFailed, NotAuthenticated
+from rest_framework.exceptions import PermissionDenied, NotFound, ValidationError, \
+    AuthenticationFailed, NotAuthenticated, NotAcceptable
 from rest_framework.response import Response
 
 from core.exceptions.jwt import JwtException
@@ -8,7 +10,7 @@ from core.exceptions.jwt import JwtException
 
 class ErrorType(Enum):
     BAD_REQUEST = {
-        "exceptions": [KeyError, ValueError, ValidationError],
+        "exceptions": [KeyError, ValueError, ValidationError, NotAcceptable],
         "code": "bad_request",
         "message": "Invalid request or parameters.",
         "status": status.HTTP_400_BAD_REQUEST,

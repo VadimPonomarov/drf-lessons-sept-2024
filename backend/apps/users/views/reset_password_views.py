@@ -35,19 +35,16 @@ class ResetPasswordTokenView(RetrieveAPIView):
     )
     @transaction.atomic
     def get(self, request, *args, **kwargs):
-        try:
-            user = get_object_or_404(UserModel, pk=self.kwargs.get("pk"))
-            token = JwtService.create_token(user, ChangePasswordToken)
-            message = MessagesEnum.PASSWORD_RESET.get_message(token=token)
+        user = get_object_or_404(UserModel, pk=self.kwargs.get("pk"))
+        token = JwtService.create_token(user, ChangePasswordToken)
+        message = MessagesEnum.PASSWORD_RESET.get_message(token=token)
 
-            send_email_service(title="Reset password", message=message,
-                               to_email=user.email)
-            return Response(
-                {"message": "Email with password reset token sent successfully"},
-                status=status.HTTP_200_OK
-            )
-        except Exception as e:
-            logger.error(f"Error in get(): {e}")
+        send_email_service(title="Reset password", message=message,
+                           to_email=user.email)
+        return Response(
+            {"message": "Email with password reset token sent successfully"},
+            status=status.HTTP_200_OK
+        )
 
 
 class ResetPasswordView(UpdateAPIView):
@@ -75,11 +72,7 @@ class ResetPasswordView(UpdateAPIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        try:
-            user = JwtService.verify_token(token, ChangePasswordToken)
-        except Exception as e:
-            return Response({"error": f"Invalid token: {str(e)}"},
-                            status=status.HTTP_400_BAD_REQUEST)
+        user = JwtService.verify_token(token, ChangePasswordToken)
 
         serializer = self.get_serializer(data={"password": new_password})
         serializer.is_valid(raise_exception=True)

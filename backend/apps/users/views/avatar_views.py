@@ -1,8 +1,9 @@
 from django.contrib.auth import get_user_model
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
+from rest_framework.exceptions import NotAcceptable
 from rest_framework.generics import (
-    RetrieveUpdateDestroyAPIView, )
+    RetrieveUpdateDestroyAPIView, get_object_or_404, )
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 
@@ -44,16 +45,11 @@ class UpdateAvatarView(RetrieveUpdateDestroyAPIView):
     )
     def patch(self, request, *args, **kwargs):
         user_id = self.kwargs.get("pk")
-        try:
-            profile = ProfileModel.objects.get(user_id=user_id)
-        except ProfileModel.DoesNotExist:
-            return Response({"error": "Profile not found"},
-                            status=status.HTTP_404_NOT_FOUND)
+        profile = get_object_or_404(ProfileModel, user_id=user_id)
 
         avatar_file = request.FILES.get("avatar")
         if not avatar_file:
-            return Response({"error": "Avatar file is required"},
-                            status=status.HTTP_400_BAD_REQUEST)
+            raise NotAcceptable("Avatar file is required")
 
         profile.avatar = avatar_file
         profile.save()
@@ -68,12 +64,7 @@ class UpdateAvatarView(RetrieveUpdateDestroyAPIView):
     )
     def delete(self, request, *args, **kwargs):
         user_id = self.kwargs.get("pk")
-        try:
-            profile = ProfileModel.objects.get(user_id=user_id)
-        except ProfileModel.DoesNotExist:
-            return Response({"error": "Profile not found"},
-                            status=status.HTTP_404_NOT_FOUND)
-
+        profile = get_object_or_404(ProfileModel, user_id=user_id)
         profile.avatar.delete()
         return Response({"message": "Avatar deleted successfully"},
                         status=status.HTTP_200_OK)
