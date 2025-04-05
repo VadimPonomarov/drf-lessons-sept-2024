@@ -1,9 +1,10 @@
 import pytest
 from django.contrib.auth import get_user_model
-from rest_framework.test import APIClient
 from rest_framework import status
+from rest_framework.test import APIClient
 
 User = get_user_model()
+
 
 # Fixtures for creating sample users in the database:
 @pytest.fixture
@@ -15,6 +16,7 @@ def normal_user(db):
     )
     return user
 
+
 @pytest.fixture
 def another_user(db):
     user = User.objects.create_user(
@@ -24,6 +26,7 @@ def another_user(db):
     )
     return user
 
+
 @pytest.fixture
 def superuser(db):
     user = User.objects.create_superuser(
@@ -32,7 +35,6 @@ def superuser(db):
         is_active=True  # Explicitly set this to True
     )
     return user
-
 
 
 @pytest.mark.django_db
@@ -92,8 +94,6 @@ def test_owner_can_update_detail(normal_user):
     assert data["profile"]["name"] == "UpdatedName"
 
 
-
-
 @pytest.mark.django_db
 def test_other_user_cannot_update_detail(normal_user, another_user):
     """
@@ -143,3 +143,67 @@ def test_superuser_can_delete_detail(normal_user, superuser):
     url = f"/api/users/{normal_user.pk}/"
     response = client.delete(url)
     assert response.status_code == status.HTTP_204_NO_CONTENT
+
+
+@pytest.mark.django_db
+def test_access_with_expired_token(normal_user):
+    """
+    Test that accessing an endpoint with an expired token returns 401 Unauthorized.
+    """
+    client = APIClient()
+    expired_token = "expired_test_token"  # Simulate an expired token.
+    client.credentials(HTTP_AUTHORIZATION=f"Bearer {expired_token}")
+    url = f"/api/users/{normal_user.pk}/"
+    response = client.get(url)
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    assert response.data.get("detail") == "Given token not valid for any token type"
+
+
+@pytest.mark.django_db
+def test_update_with_maximum_values(normal_user):
+    client = APIClient()
+    client.force_authenticate(user=normal_user)
+    url = f"/api/users/{normal_user.pk}/"
+    update_data = {"profile": {"age": 100}}  # Maximum age allowed
+    response = client.patch(url, data=update_data, format="json")
+    assert response.status_code == status.HTTP_200_OK
+    assert response.data["profile"]["age"] == 100
+
+
+@pytest.mark.django_db
+def test_nonexistent_user_access(superuser):
+    client = APIClient()
+    client.force_authenticate(user=superuser)
+    url = "/api/users/9999/"  # Nonexistent user ID
+    response = client.get(url)
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+
+@pytest.mark.django_db
+def test_email_validation_success(admin_user):
+    client = APIClient()
+    client.force_authenticate(user=admin_user)  # Authenticate as admin
+    url = "/api/users/create/"
+    data = {"email": "valid@example.com", "password": "password123"}
+    response = client.post(url, data, format="json")
+    assert response.status_code == status.HTTP_201_CREATED
+
+
+@pytest.mark.django_db
+def test_email_validation_invalid_format(admin_user):
+    client = APIClient()
+    client.force_authenticate(user=admin_user)  # Authenticate as admin
+    url = "/api/users/create/"
+    data = {"email": "invalid-email", "password": "password123"}
+    response = client.post(url, data, format="json")
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.django_db
+def test_email_validation_duplicate(admin_user):
+    client = APIClient()
+    client.force_authenticate(user=admin_user)  # Authenticate as admin
+    url = "/api/users/create/"
+    User.objects.create_user(email="duplicate@example.com", password="password123")
+    data = {"email": "duplicate@example.com", "password": "password123"}
+    response = client.post(url, data, format="json")
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
