@@ -5,7 +5,10 @@ AWS_S3_ENDPOINT_URL = os.environ.get("AWS_S3_ENDPOINT_URL", "http://localhost:90
 AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME", "us-east-1")
 
 # MinIO Configuration
-MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT", "localhost:9000")
+if bool(os.environ.get("DOCKER", False)) != True:
+    MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT", "localhost:9000")
+else:
+    MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT", "minio:9000")
 MINIO_EXTERNAL_ENDPOINT = "localhost:9000"
 MINIO_EXTERNAL_ENDPOINT_USE_HTTPS = False
 MINIO_ACCESS_KEY = os.getenv("MINIO_ROOT_USER", "root")

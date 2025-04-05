@@ -5,6 +5,8 @@ services:
     volumes:
       - ./backend:/app
     environment:
+      IS_DOCKER: True
+
       POSTGRES_HOST: "${POSTGRES_HOST:-pg}"
       POSTGRES_PORT: "${POSTGRES_PORT:-5432}"
       POSTGRES_NAME: "${POSTGRES_NAME:-db}"

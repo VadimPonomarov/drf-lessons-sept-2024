@@ -4,7 +4,6 @@ import pytest
 from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
 from rest_framework import status
-from unittest.mock import MagicMock
 
 from apps.users.models import ProfileModel
 
