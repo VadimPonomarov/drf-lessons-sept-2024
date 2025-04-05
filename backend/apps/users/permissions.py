@@ -24,16 +24,19 @@ class IsSuperuser(BaseUserPermission):
         return self.is_superuser(request)
 
 
-class IsMeUser(BaseUserPermission):
+class IsMeUser(BasePermission):
     """
-    Permission that grants access only if the object corresponds to the authenticated user.
+    Permission that grants access only if the authenticated user's ID matches the `pk` parameter in the URL,
+    and the user is active.
     """
+
     def has_permission(self, request, view):
-        return self.is_authenticated(request)
+        if not request.user or not request.user.is_authenticated:
+            return False  # Return 401 Unauthorized for unauthenticated users.
+        return request.user.is_active  # Only active users are allowed.
 
     def has_object_permission(self, request, view, obj):
-        # Allow access only if the user is the same as the object.
-        return request.user == obj
+        return request.user == obj and request.user.is_active
 
 
 class IsSuperUserOrMe(BaseUserPermission):
