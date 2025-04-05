@@ -1,7 +1,6 @@
 from enum import Enum
-
 from rest_framework import status
-from rest_framework.exceptions import PermissionDenied, NotFound
+from rest_framework.exceptions import PermissionDenied, NotFound, ValidationError, AuthenticationFailed, NotAuthenticated
 from rest_framework.response import Response
 
 from core.exceptions.jwt import JwtException
@@ -9,33 +8,33 @@ from core.exceptions.jwt import JwtException
 
 class ErrorType(Enum):
     BAD_REQUEST = {
-        "exceptions": [KeyError, ValueError, NotFound],
+        "exceptions": [KeyError, ValueError, ValidationError],
         "code": "bad_request",
-        "message": "Bad request.",
+        "message": "Invalid request or parameters.",
         "status": status.HTTP_400_BAD_REQUEST,
     }
     PERMISSION_DENIED = {
         "exceptions": [PermissionDenied],
         "code": "permission_denied",
-        "message": "Insufficient permissions.",
+        "message": "You do not have permission to perform this action.",
         "status": status.HTTP_403_FORBIDDEN,
     }
     JWT_ERROR = {
-        "exceptions": [JwtException],
+        "exceptions": [JwtException, AuthenticationFailed, NotAuthenticated],
         "code": "jwt_error",
-        "message": "JWT authentication error.",
+        "message": "Authentication failed or invalid JWT token.",
         "status": status.HTTP_401_UNAUTHORIZED,
     }
     NOT_FOUND = {
-        "exceptions": [FileNotFoundError],
+        "exceptions": [NotFound, FileNotFoundError],
         "code": "not_found",
-        "message": "Resource not found.",
+        "message": "The requested resource was not found.",
         "status": status.HTTP_404_NOT_FOUND,
     }
     SERVER_ERROR = {
-        "exceptions": None,  # This type is used for cases not explicitly specified.
+        "exceptions": None,  # Matches any uncategorized exception.
         "code": "server_error",
-        "message": "A server error occurred.",
+        "message": "An unexpected error occurred on the server.",
         "status": status.HTTP_500_INTERNAL_SERVER_ERROR,
     }
 
@@ -71,3 +70,12 @@ class ErrorType(Enum):
     def handle_exception(self, exc):
         """Calls the handler to create an HTTP response."""
         return self.handler(exc)
+
+
+def custom_exception_handler(exc, context):
+    """
+    Custom exception handler for DRF that uses ErrorType for consistent error responses.
+    """
+    # Check if the exception matches ErrorType categories
+    error_type = ErrorType.get_by_exception(exc)
+    return error_type.handle_exception(exc)

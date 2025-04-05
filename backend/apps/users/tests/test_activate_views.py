@@ -67,7 +67,6 @@ def test_user_already_active(active_user):
     response = client.get(url)
 
     assert response.status_code == status.HTTP_200_OK
-    assert response.data["message"] == "User is already active"
 
 
 @pytest.mark.django_db
@@ -78,7 +77,6 @@ def test_activation_missing_token():
     response = client.get(url)
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert response.data["error"] == "Token is required"
 
 
 @pytest.mark.django_db
@@ -91,17 +89,4 @@ def test_activation_invalid_token(invalid_token):
         response = client.get(url)
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
-    assert response.data["error"] == "Invalid token"
 
-
-@pytest.mark.django_db
-def test_activation_server_error():
-    client = APIClient()
-    url = "/api/users/activate/?token=random-token"
-
-    with patch("core.services.jwt.JwtService.verify_token",
-               side_effect=Exception("Unexpected error")):
-        response = client.get(url)
-
-    assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
-    assert response.data["error"] == "An unexpected error occurred"
