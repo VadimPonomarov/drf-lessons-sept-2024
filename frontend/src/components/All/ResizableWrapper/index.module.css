@@ -1,0 +1,19 @@
+.resizableWrapper {
+    @apply w-full max-w-4xl h-auto max-h-[calc(100vh-120px)] overflow-auto border-2 border-gray-300 rounded-lg p-5 box-border resize;
+    margin: 60px;
+}
+
+/* Для мобильных устройств */
+@media (max-width: 767px) {
+    .resizableWrapper {
+        width: calc(100% - 20px); /* Учитывает padding */
+    }
+}
+
+/* Для других экранов */
+@media (min-width: 768px) {
+    .resizableWrapper {
+        width: 50%;
+        max-width: 400px;
+    }
+}

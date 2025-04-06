@@ -1,0 +1,7 @@
+.button {
+    @apply fixed top-[60px] z-50 left-4 w-auto h-auto p-1;
+}
+
+.dialogContent {
+    @apply sm:max-w-[425px];
+}

@@ -1,0 +1,7 @@
+.container {
+    @apply flex items-center justify-center min-h-screen;
+}
+
+.form {
+    @apply flex flex-col gap-2.5 w-full box-border;
+}

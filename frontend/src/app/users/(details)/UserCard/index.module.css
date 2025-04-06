@@ -1,0 +1,10 @@
+.btn_container {
+    @apply absolute w-[20%] h-[98%] flex flex-col justify-between right-1.5 top-1
+}
+
+
+.card {
+    @apply h-auto w-[300px] overflow-auto;
+}
+
+

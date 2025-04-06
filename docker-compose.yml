@@ -44,10 +44,24 @@ services:
       - "80:80"
     depends_on:
       - app
+      - frontend
     volumes:
       - ./client:/usr/share/nginx/html
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ./backend/static:/usr/share/nginx/doc
+
+  frontend:
+    build:
+      context: ./frontend
+    working_dir: /app
+    environment:
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+    command: [ "npm", "run", "start" ]
+
 
   minio:
     image: minio/minio

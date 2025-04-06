@@ -140,3 +140,5 @@ db
 .idea
 /rabbitmq/
 /minio/
+/client/
+/logs/

@@ -1,0 +1,7 @@
+.card {
+    @apply h-[150px] w-[300px] overflow-auto;
+}
+
+.textSmall {
+    @apply text-sm;
+}

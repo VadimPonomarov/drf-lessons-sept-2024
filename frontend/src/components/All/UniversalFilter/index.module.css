@@ -1,0 +1,19 @@
+.container {
+    @apply flex flex-col;
+}
+
+.inputContainer {
+    @apply flex items-center mb-2;
+}
+
+.label {
+    @apply mr-2 capitalize;
+}
+
+.input {
+    @apply border p-2 rounded;
+}
+
+.button {
+    @apply w-[60px] h-auto mt-2 p-1 rounded cursor-pointer;
+}
