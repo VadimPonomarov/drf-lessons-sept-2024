@@ -1,6 +1,6 @@
 import React from "react";
-import FormField from "@/components/All/FormField/FormField.tsx";
 
+import FormField from "@/components/All/FormField/FormField.tsx";
 import { FormFieldsRendererProps } from ".";
 
 const FormFieldsRenderer = <T,>({ fields, register, errors, item }: FormFieldsRendererProps<T>) => (

@@ -6,13 +6,11 @@ services:
       - ./backend:/app
     environment:
       IS_DOCKER: True
-
       POSTGRES_HOST: "${POSTGRES_HOST:-pg}"
       POSTGRES_PORT: "${POSTGRES_PORT:-5432}"
       POSTGRES_NAME: "${POSTGRES_NAME:-db}"
       POSTGRES_USER: "${POSTGRES_USER:-user}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-password}"
-
       MINIO_ACCESS_KEY: "${MINIO_ACCESS_KEY:-root}"
       MINIO_SECRET_KEY: "${MINIO_SECRET_KEY:-password}"
     ports:
@@ -23,6 +21,11 @@ services:
       - minio
       - rabbitmq
       - celery
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     command: >
       sh -c "python manage.py wait_db && python manage.py migrate && python manage.py 
       runserver 0.0.0.0:8000"
@@ -37,18 +40,25 @@ services:
       - "5432:5432"
     volumes:
       - ./backend/db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-user} -d ${POSTGRES_NAME:-db}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   web:
-    image: nginx:alpine
+    image: nginx
     ports:
       - "80:80"
     depends_on:
-      - app
       - frontend
     volumes:
       - ./client:/usr/share/nginx/html
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ./backend/static:/usr/share/nginx/doc
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      retries: 1
 
   frontend:
     build:
@@ -58,26 +68,31 @@ services:
       NODE_ENV: production
     ports:
       - "3000:3000"
+    depends_on:
+      - app
     volumes:
       - ./frontend:/app
-    command: [ "npm", "run", "start" ]
-
+    command: >
+      sh -c "npm run start"
 
   minio:
     image: minio/minio
-    container_name: minio
     environment:
       MINIO_ROOT_USER: "${MINIO_ACCESS_KEY:-root}"
       MINIO_ROOT_PASSWORD: "${MINIO_SECRET_KEY:-password}"
     ports:
-      - "9000:9000"    # MinIO API
-      - "9001:9001"    # MinIO console
+      - "9000:9000"
+      - "9001:9001"
     extra_hosts:
       - "minio:127.0.0.1"
     volumes:
-      - ./minio/data:/data                  # MinIO data storage
-      - ./minio/config:/root/.minio         # MinIO configuration
-
+      - ./minio/data:/data
+      - ./minio/config:/root/.minio
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9001"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     command: server /data --console-address ":9001"
 
   mailing:
@@ -96,7 +111,6 @@ services:
     command: >
       sh -c "uvicorn main:main_app --host 0.0.0.0 --port 8000"
 
-
   rabbitmq:
     image: rabbitmq:management-alpine
     hostname: rabbitmq
@@ -106,7 +120,11 @@ services:
     ports:
       - 15672:15672
       - 5672:5672
-
+    healthcheck:
+      test: ["CMD", "rabbitmqctl status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   celery:
     build:
@@ -130,3 +148,37 @@ services:
     ports:
       - "5555:5555"
     command: [ "flower", "--broker=pyamqp://guest:guest@rabbitmq:5672//", "--port=5555" ]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5555"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis-data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  redis-insight:
+    image: redislabs/redisinsight:latest
+    ports:
+      - "5540:5540"
+    volumes:
+      - ./redis-insight:/data
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5540" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+
+

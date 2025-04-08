@@ -1,6 +1,7 @@
 import React from 'react';
-import {IUserResponse} from "@/common/interfaces/users.interfaces.ts";
 import {Metadata} from "next";
+
+import {IUserResponse} from "@/common/interfaces/users.interfaces.ts";
 import UserDetailsComponent from "@/app/users/(details)/UserDetails/UserDetailsComponent.tsx";
 import {IRecipe, IRecipesResponse} from "@/common/interfaces/recipe.interfaces.ts";
 import {RecipeCard} from "@/app/recipes/(details)/RecipeCard/RecipeCard.tsx";

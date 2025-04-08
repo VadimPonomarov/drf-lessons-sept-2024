@@ -1,14 +1,14 @@
 "use client";
 import {FC} from "react";
+import {useSearchParams} from "next/navigation";
+import { motion } from "framer-motion";
+
 import InfiniteScroll from "@/components/All/InfiniteScroll/InfiniteScroll.tsx";
 import {PaginationComponent} from "@/components/All/PaginationComponent/PaginationComponent.tsx";
 import {IRecipe, IRecipesResponse} from "@/common/interfaces/recipe.interfaces.ts";
 import {RecipeCard} from "@/app/recipes/(details)/RecipeCard/RecipeCard.tsx";
 import DialogModal from "@/components/All/DialogModal/DialogModal.tsx";
 import UniversalFilter from "@/components/All/UniversalFilter/FilterInput.tsx";
-import {useSearchParams} from "next/navigation";
-import { motion } from "framer-motion";
-
 import {useRecipes} from "./useRecipes.ts";
 
 interface IProps {

@@ -1,4 +1,5 @@
 import React from 'react';
+
 import RecipeDetailsComponent from "@/app/recipes/(details)/RecipeDetailsComponent/RecipeDetailsComponent.tsx";
 import {fetchRecipeById} from "@/app/api/helpers.ts";
 

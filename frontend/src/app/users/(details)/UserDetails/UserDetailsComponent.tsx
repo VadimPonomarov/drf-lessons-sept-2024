@@ -1,9 +1,11 @@
+import clsx from "clsx";
+import {FC} from "react";
+
 import styles from "@/app/users/(details)/UserCard/index.module.css";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card.tsx";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.tsx";
-import clsx from "clsx";
 import {IUserResponse} from "@/common/interfaces/users.interfaces.ts";
-import {FC} from "react";
+
 
 
 type IProps = { user: IUserResponse }

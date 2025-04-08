@@ -1,9 +1,9 @@
 import React, { FC } from "react";
 import { Metadata } from "next";
 import { getServerSession } from "next-auth/next";
-import SimpleAlert from "@/components/All/Alerts/SimpleAlert.tsx";
 import Link from "next/link";
 
+import SimpleAlert from "@/components/All/Alerts/SimpleAlert.tsx";
 import { getMetadata } from "./index.metadata";
 
 const Home: FC = async () => {

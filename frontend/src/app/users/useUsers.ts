@@ -1,23 +1,21 @@
 "use client";
-import { useEffect, useState, useCallback, useMemo } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import { signOut } from "next-auth/react";
-import { IUser, IUsersResponse } from "@/common/interfaces/users.interfaces";
-import { filterItems } from "@/services/filters/filterServices";
+import {useCallback, useEffect, useMemo, useState} from "react";
+import {useRouter, useSearchParams} from "next/navigation";
+import {useInfiniteQuery, useQueryClient} from "@tanstack/react-query";
+import {signOut} from "next-auth/react";
+
+import {IUser, IUsersResponse} from "@/common/interfaces/users.interfaces";
+import {filterItems} from "@/services/filters/filterServices";
 
 interface IProps {
     initialData: IUsersResponse;
 }
 
-export const useUsers = ({ initialData }: IProps) => {
+export const useUsers = ({initialData}: IProps) => {
     const searchParams = useSearchParams();
     const router = useRouter();
     const queryClient = useQueryClient();
-    const limit =
-        searchParams.get("limit") !== null
-            ? Number(searchParams.get("limit"))
-            : 30;
+    const limit = Number(searchParams.get("limit")) || 0;
     const skip = Number(searchParams.get("skip")) || 0;
     const total = initialData instanceof Error ? 0 : Number(initialData.total);
     const [uniqueUsers, setUniqueUsers] = useState<IUser[]>([]);
@@ -26,7 +24,7 @@ export const useUsers = ({ initialData }: IProps) => {
 
     useEffect(() => {
         if (initialData instanceof Error) {
-            signOut({ callbackUrl: "/api/auth" });
+            signOut({callbackUrl: "/api/auth"});
         }
     }, [initialData]);
 
@@ -38,7 +36,7 @@ export const useUsers = ({ initialData }: IProps) => {
         isFetchingNextPage,
     } = useInfiniteQuery<IUsersResponse, Error>({
         queryKey: ["users", limit, skip],
-        queryFn: async ({ pageParam = skip }) =>
+        queryFn: async ({pageParam = skip}) =>
             await fetch(
                 `/api/users?${new URLSearchParams({
                     limit: String(limit),
@@ -56,7 +54,7 @@ export const useUsers = ({ initialData }: IProps) => {
         initialData:
             initialData instanceof Error
                 ? undefined
-                : { pages: [initialData], pageParams: [skip] },
+                : {pages: [initialData], pageParams: [skip]},
         staleTime: Infinity,
     });
 
@@ -78,7 +76,7 @@ export const useUsers = ({ initialData }: IProps) => {
     }, [data, filterParams]);
 
     useEffect(() => {
-        queryClient.invalidateQueries({ queryKey: ["users"] });
+        queryClient.invalidateQueries({queryKey: ["users"]});
     }, [skip, limit, queryClient]);
 
     useEffect(() => {

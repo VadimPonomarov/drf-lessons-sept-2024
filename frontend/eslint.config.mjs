@@ -23,8 +23,6 @@ const eslintConfig = [
             "@typescript-eslint/no-empty-interface": ["warn", {
                 allowSingleExtends: true,
             },],
-            "react-hooks/exhaustive-deps": "off",
-            "@typescript-eslint/no-explicit-any": "off",
         },
     },];
 

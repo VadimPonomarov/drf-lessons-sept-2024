@@ -1,7 +1,7 @@
 import {FC} from "react";
+
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card.tsx";
 import ArrowButton from "@/components/All/ArrowButton/ArrowButton.tsx";
-
 import styles from "./index.module.css";
 import {IProps} from "./interfaces.ts";
 

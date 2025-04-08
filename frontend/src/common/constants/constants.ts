@@ -1,4 +1,5 @@
 import {getServerSession} from "next-auth/next";
+
 import {authConfig} from "@/configs/auth.ts";
 import {IUserSession} from "@/common/interfaces/users.interfaces.ts";
 

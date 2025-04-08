@@ -1,5 +1,6 @@
-import { baseUrl, getAuthorizationHeaders } from "@/common/constants/constants.ts";
 import { redirect } from "next/navigation";
+
+import { baseUrl, getAuthorizationHeaders } from "@/common/constants/constants.ts";
 
 async function fetchData(endpoint: string, params?: Record<string, string>) {
     const urlSearchParams = new URLSearchParams(params).toString();

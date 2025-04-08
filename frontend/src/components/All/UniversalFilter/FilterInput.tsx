@@ -1,6 +1,5 @@
 import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
-
 import styles from "./index.module.css";
 import useUniversalFilter from "./useUniversalFilter";
 import {IProps} from "./index.interfaces";

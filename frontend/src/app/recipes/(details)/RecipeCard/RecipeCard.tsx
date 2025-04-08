@@ -1,11 +1,11 @@
 import {FC} from "react";
-import {Card, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
-import {Button} from "@/components/ui/button.tsx";
 import {v4 as uuidv4} from "uuid";
-import ArrowButton from "@/components/All/ArrowButton/ArrowButton.tsx";
-import ClientComponentWrapper from "@/components/All/ClientComponentWrapper/ClientComponentWrapper.tsx";
 import Link from "next/link";
 
+import {Card, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.tsx";
+import {Button} from "@/components/ui/button.tsx";
+import ArrowButton from "@/components/All/ArrowButton/ArrowButton.tsx";
+import ClientComponentWrapper from "@/components/All/ClientComponentWrapper/ClientComponentWrapper.tsx";
 import styles from "./index.module.css";
 import {IProps} from "./interfaces.ts";
 

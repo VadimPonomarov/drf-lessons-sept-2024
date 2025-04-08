@@ -1,9 +1,11 @@
 "use client";
 
-import MenuComponent from "@/components/All/MenuComponent/MenuComponent.tsx";
 import {signOut, useSession} from "next-auth/react";
-import {IMenuItem} from "@/components/All/MenuComponent/menu.interfaces.ts";
 import {FaSignOutAlt} from "react-icons/fa";
+
+import MenuComponent from "@/components/All/MenuComponent/MenuComponent.tsx";
+import {IMenuItem} from "@/components/All/MenuComponent/menu.interfaces.ts";
+
 
 export const MenuMain = () => {
     const {status} = useSession();

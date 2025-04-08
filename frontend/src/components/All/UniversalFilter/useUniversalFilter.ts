@@ -6,6 +6,7 @@ const useUniversalFilter = <T>({
                                    cb,
                                }: IProps<T>) => {
     const [inputValues, setInputValues] = useState<{ [key in keyof T]?: string }>({});
+
     useEffect(() => {
         if (cb) {
             cb(inputValues);

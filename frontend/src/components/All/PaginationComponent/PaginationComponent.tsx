@@ -1,5 +1,6 @@
 "use client";
 import { FC } from "react";
+
 import {
   Pagination,
   PaginationContent,
@@ -12,7 +13,6 @@ import {
 import SearchParamSkipSelector from "@/components/All/SearchParamSkipSelector/SearchParamSkipSelector.tsx";
 import SearchParamLimitSelector from "@/components/All/SearchParamLimitSelector/SearchParamLimitSelector.tsx";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-
 import styles from "./index.module.css";
 import { usePaginationComponent } from "./usePaginationComponent";
 import { IProps } from "./interfaces";
