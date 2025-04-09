@@ -1,5 +1,4 @@
 import Joi from "joi";
-
 import { IDummyAuth } from "@/common/interfaces/dummy.interfaces.ts";
 
 export const schema = Joi.object<IDummyAuth>({

@@ -1,12 +1,12 @@
 import "./globals.css";
 import React from "react";
 import {PageTracker} from "react-page-tracker";
-
 import {MenuMain} from "@/components/Menus/MenuMain/MenuMain";
 import RootProvider from "@/common/providers/RootProvider";
 import ThemeToggle from "@/components/All/ThemeToggle/ThemeToggle.tsx";
 import AuthBadge from "@/components/All/AuthBadge/AuthBadge.tsx";
 import {MagicBackButton} from "@/components/ui/magicBackButton.tsx";
+
 import {geistMono, geistSans} from "./constants";
 import css from "./index.module.css";
 

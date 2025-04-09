@@ -1,5 +1,4 @@
 import { FC } from "react";
-
 import { ResizableWrapper } from "@/components/All/ResizableWrapper/ResizableWrapper.tsx";
 import { Alert, AlertDescription } from "@/components/ui/alert.tsx";
 

@@ -1,6 +1,5 @@
 import { FC } from "react";
 import { FaFilter } from 'react-icons/fa'; // Import the filter icon from react-icons
-
 import { Button } from "@/components/ui/button.tsx";
 import {
   Dialog,
@@ -10,6 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog.tsx";
+
 import styles from "./index.module.css";
 
 interface IProps {

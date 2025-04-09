@@ -1,8 +1,8 @@
 import {Metadata} from "next";
-
 import {IRecipe, IRecipesResponse} from "@/common/interfaces/recipe.interfaces.ts";
 import {RecipeCard} from "@/app/recipes/(details)/RecipeCard/RecipeCard.tsx";
 import {fetchRecipesByTag} from "@/app/api/helpers.ts";
+
 import styles from "./index.module.css";
 
 interface IProps {

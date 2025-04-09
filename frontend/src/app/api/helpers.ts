@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-
 import { baseUrl, getAuthorizationHeaders } from "@/common/constants/constants.ts";
 
 async function fetchData(endpoint: string, params?: Record<string, string>) {

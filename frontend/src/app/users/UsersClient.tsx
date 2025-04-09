@@ -2,13 +2,13 @@
 import {FC} from "react";
 import {useSearchParams} from "next/navigation";
 import {motion} from "framer-motion";
-
 import {IUser, IUsersResponse} from "@/common/interfaces/users.interfaces.ts";
 import {UserCard} from "@/app/users/(details)/UserCard/UserCard.tsx";
 import InfiniteScroll from "@/components/All/InfiniteScroll/InfiniteScroll.tsx";
 import {PaginationComponent} from "@/components/All/PaginationComponent/PaginationComponent.tsx";
 import UniversalFilter from "@/components/All/UniversalFilter/FilterInput.tsx";
 import DialogModal from "@/components/All/DialogModal/DialogModal.tsx";
+
 import {useUsers} from "./useUsers.ts";
 
 interface IProps {

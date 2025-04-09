@@ -1,9 +1,9 @@
 import Link from "next/link";
 import {FC} from "react";
-
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card.tsx";
 import {ResizableWrapper} from "@/components/All/ResizableWrapper/ResizableWrapper.tsx";
 import {IRecipe} from "@/common/interfaces/recipe.interfaces.ts";
+
 import styles from "./index.module.css";
 
 

@@ -1,7 +1,7 @@
 import React from "react";
-
 import {Input} from "@/components/ui/input";
 import {FormFieldProps} from "@/common/interfaces/forms.interfaces.ts";
+
 import css from "./index.module.css";
 
 

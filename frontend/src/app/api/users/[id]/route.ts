@@ -1,5 +1,4 @@
 import {NextRequest, NextResponse} from 'next/server';
-
 import {fetchUserById} from "@/app/api/helpers.ts";
 
 interface IProps {

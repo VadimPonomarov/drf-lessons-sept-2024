@@ -1,6 +1,5 @@
 import clsx from "clsx";
 import {FC} from "react";
-
 import styles from "@/app/users/(details)/UserCard/index.module.css";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card.tsx";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.tsx";

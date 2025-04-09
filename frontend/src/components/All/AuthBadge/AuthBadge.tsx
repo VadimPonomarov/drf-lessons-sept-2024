@@ -1,7 +1,6 @@
 "use client";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-
 import { Badge } from "@/components/ui/badge.tsx";
 import { IUserSession } from "@/common/interfaces/users.interfaces.ts";
 

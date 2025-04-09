@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-
 import {fetchRecipes} from "@/app/api/helpers.ts";
 
 export async function GET(req: NextRequest) {

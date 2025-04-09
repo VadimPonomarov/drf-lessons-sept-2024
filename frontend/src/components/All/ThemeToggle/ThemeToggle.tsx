@@ -1,7 +1,6 @@
 "use client"
 import {MoonIcon, SunIcon} from "@heroicons/react/16/solid";
 import {useEffect, useState} from "react";
-
 import {Button} from "@/components/ui/button.tsx";
 
 function ThemeToggle() {

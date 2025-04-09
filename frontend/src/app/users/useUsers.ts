@@ -3,7 +3,6 @@ import {useCallback, useEffect, useMemo, useState} from "react";
 import {useRouter, useSearchParams} from "next/navigation";
 import {useInfiniteQuery, useQueryClient} from "@tanstack/react-query";
 import {signOut} from "next-auth/react";
-
 import {IUser, IUsersResponse} from "@/common/interfaces/users.interfaces";
 import {filterItems} from "@/services/filters/filterServices";
 

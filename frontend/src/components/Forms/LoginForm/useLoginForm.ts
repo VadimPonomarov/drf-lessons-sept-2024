@@ -5,10 +5,10 @@ import {SubmitHandler, useForm} from "react-hook-form";
 import {signIn, useSession} from "next-auth/react";
 import {useRouter, useSearchParams} from "next/navigation";
 import {setCookie} from "cookies-next";
-
 import {IDummyAuth} from "@/common/interfaces/dummy.interfaces.ts";
 import {FormFieldsConfig} from "@/common/interfaces/forms.interfaces.ts";
 import {IUserSession} from "@/common/interfaces/users.interfaces.ts";
+
 import {schema} from "./index.joi";
 
 export const formFields: FormFieldsConfig<IDummyAuth> = [

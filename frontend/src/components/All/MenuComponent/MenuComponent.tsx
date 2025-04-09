@@ -5,9 +5,9 @@ import {clsx} from "clsx";
 import {FC} from "react";
 import Link from "next/link";
 import {usePathname} from "next/navigation";
-
 import {Menubar, MenubarMenu} from "@/components/ui/menubar";
 import css from "@/components/All/MenuComponent/menu.module.css";
+
 import {IProps} from "./menu.interfaces";
 
 const MenuComponent: FC<IProps> = ({children, items, className}) => {
