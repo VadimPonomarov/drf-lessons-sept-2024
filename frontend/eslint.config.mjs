@@ -23,6 +23,7 @@ const eslintConfig = [
             "@typescript-eslint/no-empty-interface": ["warn", {
                 allowSingleExtends: true,
             },],
+            "@typescript-eslint/ban-ts-comment": ["off"],
         },
     },];
 

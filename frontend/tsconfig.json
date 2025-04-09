@@ -24,6 +24,7 @@
     "incremental": true,
     "allowImportingTsExtensions": true,
     "allowSyntheticDefaultImports": true,
+
     "plugins": [
       {
         "name": "next"
@@ -39,7 +40,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "next-env.d.ts",
+    "src/next-env.d.ts",
     "../client/types/**/*.ts"
   ],
   "exclude": [

@@ -17,9 +17,9 @@ export async function getAuthorizationHeaders() {
     const session = await getServerSession(authConfig);
     const accessToken = (session?.user as IUserSession)?.accessToken;
 
-    if (!accessToken) {
-        throw new Error('Access token not found');
-    }
+    // if (!accessToken) {
+    //     throw new Error('Access token not found');
+    // }
 
     return {
         ...headers_CORS,

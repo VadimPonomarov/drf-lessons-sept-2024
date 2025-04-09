@@ -16,8 +16,9 @@ export const MenuMain = () => {
     { path: "/", label: "Home", disabled: false },
     { path: "/users", label: "Users" },
     { path: "/recipes", label: "Recipes" },
+    { path: "/login", label: "Login", disabled: status !== "authenticated" },
     {
-      path: "/api/auth/signin",
+      path: "/api/auth",
       label: "Auth",
       disabled: status === "authenticated",
     },
