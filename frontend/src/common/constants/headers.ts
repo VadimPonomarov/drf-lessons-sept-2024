@@ -18,7 +18,6 @@ export const getAuthorizationHeaders = async () => {
       ...headers_CORS,
       Authorization: `Bearer ${authData.accessToken}`,
       credentials: "include" as RequestCredentials,
-      cache: "force-cache" as RequestCache,
     };
   } catch (error) {
     console.error("Error retrieving access token from Redis:", error);

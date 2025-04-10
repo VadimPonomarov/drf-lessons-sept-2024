@@ -6,6 +6,7 @@ import {fetchUsers} from "@/app/api/helpers.ts";
 
 import styles from "./index.module.css";
 
+
 const UsersPage: FC = async () => {
     const response = await fetchUsers() as unknown as IUsersResponse;
 
