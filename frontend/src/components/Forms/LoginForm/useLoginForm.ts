@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -27,7 +28,7 @@ export const useLoginForm = () => {
   };
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const callbackUrl = searchParams.get("callbackUrl") || "/users";
 
   const {
     register,
@@ -41,18 +42,25 @@ export const useLoginForm = () => {
   });
 
   const onSubmit: SubmitHandler<IDummyAuth> = async (data) => {
-    const response = (await fetchAuth(data)) as IDummyAuthLoginResponse;
-    await fetch("/api/redis", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        key: "accessToken",
-        value: response.accessToken,
-      }),
-    });
-    return router.push(callbackUrl);
+    try {
+      const response = (await fetchAuth(data)) as IDummyAuthLoginResponse;
+
+      await fetch("/api/redis", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          key: "dummy_auth",
+          value: response,
+        }),
+      });
+
+      router.push(callbackUrl);
+    } catch (error) {
+      console.error("Error during login:", error);
+      setError("Failed to login. Please try again.");
+    }
   };
 
   return {

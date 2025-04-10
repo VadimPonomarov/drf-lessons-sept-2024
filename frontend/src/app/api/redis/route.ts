@@ -10,19 +10,19 @@ export const POST = async (req: Request) => {
     if (!key || !value) {
       return NextResponse.json(
         { error: "Key and value are required" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
     // Сохранение данных в Redis
-    await setRedisData(key, value); // Устанавливаем ключ и значение
+    await setRedisData(key, value);
 
     return NextResponse.json({ message: "Data successfully saved to Redis" });
   } catch (error) {
     console.error("Error saving data to Redis:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 };
@@ -36,7 +36,7 @@ export const GET = async (req: Request) => {
     if (!key) {
       return NextResponse.json(
         { error: "Key is required" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -46,7 +46,7 @@ export const GET = async (req: Request) => {
     if (!value) {
       return NextResponse.json(
         { error: `Data not found for key: ${key}` },
-        { status: 404 },
+        { status: 404 }
       );
     }
 
@@ -55,7 +55,7 @@ export const GET = async (req: Request) => {
     console.error("Error retrieving data from Redis:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 };

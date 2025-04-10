@@ -46,7 +46,7 @@ export const authConfig: AuthOptions = {
       }
 
       return {
-        user: session.user.email,
+        email: session.user.email,
         accessToken: token.accessToken, // Добавляем токен в сессию
         expiresOn: new Date(expiresTimestamp).toLocaleString(), // Локализованная дата истечения
       } as unknown as Session;

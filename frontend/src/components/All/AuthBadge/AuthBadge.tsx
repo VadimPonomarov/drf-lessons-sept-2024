@@ -2,29 +2,16 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge.tsx";
-import { IUserSession } from "@/common/interfaces/users.interfaces.ts";
+import { ISession } from "@/common/interfaces/session.interfaces.ts";
 
 const AuthBadge: React.FC = () => {
-    const { data: session, status } = useSession();
-    const user = session?.user as IUserSession | undefined;
+  const session_data = useSession().data as unknown as ISession;
 
-    if (status === "loading") {
-        return null;
-    }
-
-    if (status === "authenticated" && user) {
-        return (
-            <Badge variant={"destructive"}>
-                <Link href={"/profile"}>
-                    {user.firstName}
-                </Link>
-            </Badge>
-        );
-    }
-
-    return null;
+  return (
+    <Badge variant={"destructive"}>
+      <Link href={"/profile"}>{session_data?.email || "Guest"}</Link>
+    </Badge>
+  );
 };
 
 export default AuthBadge;
-
-
