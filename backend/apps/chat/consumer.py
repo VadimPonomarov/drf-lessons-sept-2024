@@ -1,6 +1,9 @@
+from asgiref.sync import sync_to_async
 from djangochannelsrestframework.generics import GenericAsyncAPIConsumer
 
+
 from config.extra_config.logger_config import logger
+from core.services.jwt import JwtService
 
 
 class ChatConsumer(GenericAsyncAPIConsumer):
@@ -9,10 +12,39 @@ class ChatConsumer(GenericAsyncAPIConsumer):
 
     async def connect(self):
         try:
-            if not self.scope["user"] or self.scope["user"].is_anonymous:
+            # Extract the "Authorization" header
+            headers = dict(self.scope["headers"])
+            authorization_header = headers.get(b'authorization', None)
+
+            if not authorization_header:
+                logger.error("Authorization header missing.")
                 await self.close()
-            else:
+                return
+
+            try:
+                # Extract the token (assumes 'Bearer <token>' format)
+                token = authorization_header.decode().split(" ")[1]
+                logger.info(f"Extracted token: {token}")
+
+                # Validate the token using sync_to_async to handle synchronous code
+                validated_user = await sync_to_async(JwtService.validate_any_token)(
+                    token)
+                self.scope["user"] = validated_user
+                self.user_name = validated_user.email
                 await self.accept()
-                logger.info("User connected to chat.")
+                logger.info(f"User {self.user_name} connected to chat.")
+
+            except IndexError:
+                logger.error("Invalid Authorization header format.")
+                await self.close()
+                return
+            except Exception as e:
+                logger.error(f"Error in connect(): {e}")
+                await self.close()
+
         except Exception as e:
-            logger.error(f"Error in connect(): {e}")
+            logger.error(f"Unexpected error in connect(): {e}")
+            await self.close()
+
+
+

@@ -3,6 +3,7 @@ from typing import Type
 
 from django.contrib.auth import get_user_model
 from rest_framework.generics import get_object_or_404
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import BlacklistMixin, Token
 
 from core.enums.jwt import ActionTokenEnum
@@ -70,3 +71,34 @@ class JwtService:
 
         except Exception as e:
             raise JwtException(f"Token verification failed: {str(e)}")
+
+    @staticmethod
+    def verify_token_without_token_class(token):
+        """
+        Raises JwtException for invalid tokens.
+        """
+        try:
+            # Create a token instance using the token string
+            token.check_blacklist()
+
+            # Extract the user_id from the token payload
+            user_id = token.payload.get("user_id")
+            if not user_id:
+                raise JwtException("Token payload does not contain 'user_id'.")
+
+            # Retrieve the associated user
+            return get_object_or_404(UserModel, pk=user_id)
+
+        except Exception as e:
+            raise JwtException(f"Token verification failed: {str(e)}")
+
+    @staticmethod
+    def validate_any_token(token):
+        """
+        Validate a JWT token using DRF SimpleJWT.
+        This function is synchronous and needs to be called using sync_to_async in async contexts.
+        """
+        authenticator = JWTAuthentication()
+        validated_token = authenticator.get_validated_token(token)  # Decode and verify
+        user = authenticator.get_user(validated_token)  # Get user
+        return user

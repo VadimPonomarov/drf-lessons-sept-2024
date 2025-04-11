@@ -2,8 +2,8 @@ from django.core.serializers.base import Serializer
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.generics import GenericAPIView
+from rest_framework.response import Response
 
 from apps.users.permissions import IsMeUser
 from config.extra_config.logger_config import logger
@@ -21,9 +21,9 @@ class SocketTokenView(GenericAPIView):
     @swagger_auto_schema(
         operation_summary="Generate Socket Token (Session-Based Authentication)",
         operation_description=(
-            "This endpoint generates a JSON Web Token (JWT) for socket authentication. "
-            "Access is restricted to authenticated users who have logged in via the standard session "
-            "using default credentials (username and password)."
+                "This endpoint generates a JSON Web Token (JWT) for socket authentication. "
+                "Access is restricted to the authenticated user, who must be logged in "
+                "and provide Bearer authentication in the 'Authorization' header. "
         ),
         responses={
             200: openapi.Response(
