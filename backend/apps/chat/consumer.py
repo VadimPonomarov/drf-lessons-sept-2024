@@ -89,3 +89,17 @@ class ChatConsumer(GenericAsyncAPIConsumer):
                 "id": request_id
             }
         )
+
+    async def disconnect(self, code):
+        await self.channel_layer.group_send(
+            self.room_name,
+            {
+                "type": "chat_message",
+                "message": f"{self.user_name} has left the chat."
+            }
+        )
+        await self.channel_layer.group_discard(
+            self.room_name,
+            self.channel_name
+        )
+
