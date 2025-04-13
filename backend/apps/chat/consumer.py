@@ -1,3 +1,5 @@
+import uuid
+
 from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
@@ -79,7 +81,7 @@ class ChatConsumer(GenericAsyncAPIConsumer):
         await self.send_json(data)
 
     @action()
-    async def send_message(self, data, request_id, action):
+    async def send_message(self, data, action, request_id=uuid.uuid4()):
         await self.channel_layer.group_send(
             self.room_name,
             {
@@ -102,4 +104,3 @@ class ChatConsumer(GenericAsyncAPIConsumer):
             self.room_name,
             self.channel_name
         )
-
