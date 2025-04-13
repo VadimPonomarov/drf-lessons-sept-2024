@@ -20,6 +20,7 @@ from django.urls.conf import include
 from apps.users.urls import urlpatterns as users_urls
 from .docs.urls import urlpatterns as docs_urls
 from apps.auth.urls import urlpatterns as auth_urls
+from apps.chat.urls import urlpatterns as chat_urls
 
 urlpatterns = [
     path("api/users/", include(users_urls)),
@@ -27,3 +28,4 @@ urlpatterns = [
 ]
 
 urlpatterns += docs_urls
+urlpatterns += chat_urls

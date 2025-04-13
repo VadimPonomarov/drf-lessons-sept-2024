@@ -1,7 +1,6 @@
 from asgiref.sync import sync_to_async
 from djangochannelsrestframework.generics import GenericAsyncAPIConsumer
 
-
 from config.extra_config.logger_config import logger
 from core.services.jwt import JwtService
 
@@ -30,9 +29,11 @@ class ChatConsumer(GenericAsyncAPIConsumer):
                 validated_user = await sync_to_async(JwtService.validate_any_token)(
                     token)
                 self.scope["user"] = validated_user
-                self.user_name = validated_user.email
+                self.user_name = validated_user.email.split("@")[0]
+                self.room_name = self.scope['url_route']['kwargs']['room']
                 await self.accept()
-                logger.info(f"User {self.user_name} connected to chat.")
+                logger.info(f"User with email {validated_user.email} connected to chat.")
+                logger.info(f"User_name: {self.user_name}, Room_name: {self.room_name}.")
 
             except IndexError:
                 logger.error("Invalid Authorization header format.")
@@ -45,6 +46,3 @@ class ChatConsumer(GenericAsyncAPIConsumer):
         except Exception as e:
             logger.error(f"Unexpected error in connect(): {e}")
             await self.close()
-
-
-
