@@ -1,6 +1,7 @@
 from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
+from djangochannelsrestframework.decorators import action
 from djangochannelsrestframework.generics import GenericAsyncAPIConsumer
 
 from config.extra_config.logger_config import logger
@@ -10,6 +11,12 @@ User = get_user_model()
 
 
 class ChatConsumer(GenericAsyncAPIConsumer):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(args, kwargs)
+        self.room_name = None
+        self.user_name = None
+
     async def connect(self):
         try:
             headers = dict(self.scope["headers"])
@@ -30,18 +37,31 @@ class ChatConsumer(GenericAsyncAPIConsumer):
 
                 user_from_db = await sync_to_async(get_object_or_404)(User,
                                                                       pk=validated_user.id)
-                self.user_name = validated_user.email.split("@")[0]
-                self.room_name = self.scope['url_route']['kwargs']['room']
-
-                # Убедитесь, что синхронный код внутри асинхронного метода обрабатывается с помощью sync_to_async
-                profile_name = await sync_to_async(
+                user_name = await sync_to_async(
                     lambda: user_from_db.profile.name if user_from_db.profile.name
                     else validated_user.email.split("@")[0])()
 
-                await self.accept()
-                logger.info(f"User with email {validated_user.email} connected to chat.")
+                self.user_name = user_name
+                self.room_name = self.scope['url_route']['kwargs']['room']
+
                 logger.info(
-                    f"User_name: {profile_name}, Room_name: {self.room_name}.")
+                    f"User with email {validated_user.email} connected to chat.")
+                logger.info(
+                    f"User_name: {self.user_name}, Room_name: {self.room_name}.")
+
+                await self.channel_layer.group_add(
+                    self.room_name,
+                    self.channel_name
+                )
+                await self.accept()
+                await self.channel_layer.group_send(
+                    self.room_name,
+                    {
+                        "type": "chat_message",
+                        "message": f"{self.user_name} has joined the chat."
+                    }
+                )
+
 
             except IndexError:
                 logger.error("Invalid Authorization header format.")
@@ -54,3 +74,18 @@ class ChatConsumer(GenericAsyncAPIConsumer):
         except Exception as e:
             logger.error(f"Unexpected error in connect(): {e}")
             await self.close()
+
+    async def chat_message(self, data):
+        await self.send_json(data)
+
+    @action()
+    async def send_message(self, data, request_id, action):
+        await self.channel_layer.group_send(
+            self.room_name,
+            {
+                "type": "chat_message",
+                "message": data,
+                "user_name": self.user_name,
+                "id": request_id
+            }
+        )

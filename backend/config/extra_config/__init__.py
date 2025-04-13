@@ -1,8 +1,9 @@
 __all__ = ["BASE_URL", "REST_FRAMEWORK", "SIMPLE_JWT", "SWAGGER_SETTINGS",
            "SWAGGER_USE_COMPAT_RENDERERS",
-           "DATABASES", "logger"]
+           "DATABASES", "logger", "CHANNEL_LAYERS"]
 
 from .base_url import BASE_URL
+from .channels import CHANNEL_LAYERS
 from .db import DATABASES
 from .logger_config import logger
 from .rest_framework import REST_FRAMEWORK
