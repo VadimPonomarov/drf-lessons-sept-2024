@@ -100,7 +100,7 @@ export const fetchRefresh = async (): Promise<void> => {
     console.log(refreshToken);
     if (!refreshToken) {
       console.error("Refresh token not found in Redis.");
-      throw new Error("Refresh token missing.");
+      redirect("/login");
     }
 
     const response = await fetch(`${baseUrl}/auth/refresh`, {
@@ -114,14 +114,14 @@ export const fetchRefresh = async (): Promise<void> => {
 
     if (!response.ok) {
       console.error(`Failed to refresh token. Status: ${response.status}`);
-      throw new Error("Token refresh failed.");
+      redirect("/login");
     }
 
     const updatedData = await response.json();
     await setRedisData("dummy_auth", JSON.stringify(updatedData));
   } catch (error) {
     console.error("Error during token refresh:", error.toString());
-    throw error;
+    redirect("/login");
   }
 };
 

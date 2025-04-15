@@ -4,7 +4,7 @@ import { NextRequestWithAuth, withAuth } from "next-auth/middleware";
 export async function middleware(req: NextRequestWithAuth) {
   console.log("Middleware start for URL:", req.url);
 
-  // Блокируем прямой доступ к API через адресную строку
+  // Block direct access to API from the browser address bar
   if (
     req.url.includes("/api/") &&
     (!req.headers.get("referer") || req.headers.get("referer") === req.url)
@@ -18,15 +18,16 @@ export async function middleware(req: NextRequestWithAuth) {
   try {
     const response = await withAuth(req, {});
     if (response) {
-      console.log("Authentication failed. Redirecting...");
-      return NextResponse.redirect(new URL("/api/auth", req.url));
+      console.log("Authentication failed. Redirecting to sign-in page...");
+      // Redirect to sign-in page with a callback URL
+      const callbackUrl = encodeURIComponent(req.url);
+      return NextResponse.redirect(new URL(`/api/auth/signin?callbackUrl=${callbackUrl}`, req.url));
     }
 
     return NextResponse.next();
   } catch (error) {
     console.error("Middleware error:", (error as Error).message);
-
-    return NextResponse.redirect(new URL("/error", req.url));
+    return NextResponse.redirect(new URL("/error", req.url)); // Redirect to a generic error page
   }
 }
 
@@ -34,7 +35,7 @@ export { middleware as default };
 
 export const config = {
   matcher: [
-    "/api/:path",
+    "/api/:path*",
     "/recipes/:path*",
     "/profile/:path*",
     "/users/:path*",
