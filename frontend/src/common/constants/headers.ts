@@ -3,6 +3,7 @@
 import { getRedisData } from "@/services/redis/redisService.ts";
 import { headers_CORS } from "@/common/constants/constants.ts";
 import { IDummyAuthLoginResponse } from "@/common/interfaces/dummy.interfaces.ts";
+import { redirect } from "next/navigation";
 
 export const getAuthorizationHeaders = async () => {
   try {
@@ -11,7 +12,7 @@ export const getAuthorizationHeaders = async () => {
     )) as unknown as IDummyAuthLoginResponse;
 
     if (!authData || !authData.accessToken) {
-      throw new Error("Access token not found in Redis");
+      return redirect("/login");
     }
 
     return {
@@ -20,8 +21,6 @@ export const getAuthorizationHeaders = async () => {
       credentials: "include" as RequestCredentials,
     };
   } catch (error) {
-    console.error("Error retrieving access token from Redis:", error);
     throw error;
   }
 };
-

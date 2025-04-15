@@ -1,4 +1,6 @@
+"use server";
 import { createClient } from "redis";
+import { IDummyAuthLoginResponse } from "@/common/interfaces/dummy.interfaces.ts";
 
 let redisClient: ReturnType<typeof createClient> | null = null;
 
@@ -25,7 +27,7 @@ export const connectRedis = async () => {
 export const setRedisData = async (
   key: string,
   value: Record<string, unknown> | string,
-  expiration: number = 3600
+  expiration: number = 3600,
 ): Promise<void> => {
   const client = await connectRedis();
 
@@ -42,7 +44,7 @@ export const setRedisData = async (
 
 // Получение данных из Redis
 export const getRedisData = async (
-  key: string
+  key: string,
 ): Promise<Record<string, unknown> | string | null> => {
   const client = await connectRedis();
 

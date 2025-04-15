@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "npm run kill 3000 && npm run lint && next dev --turbopack",
     "build": "npm run lint && next build",
-    "start": "next start",
+    "start": "npm run kill 3000 && next start",
     "lint": "eslint  src --fix",
     "generate": "node scripts/generate-component.cjs",
     "kill": "npx kill-port",

@@ -4,7 +4,7 @@ import { NextRequestWithAuth, withAuth } from "next-auth/middleware";
 export async function middleware(req: NextRequestWithAuth) {
   console.log("Middleware start for URL:", req.url);
 
-  // Block direct access to /api from the browser address bar
+  // Блокируем прямой доступ к API через адресную строку
   if (
     req.url.includes("/api/") &&
     (!req.headers.get("referer") || req.headers.get("referer") === req.url)
@@ -25,12 +25,7 @@ export async function middleware(req: NextRequestWithAuth) {
     return NextResponse.next();
   } catch (error) {
     console.error("Middleware error:", (error as Error).message);
-    // Redirect to /api/auth in case of an error (e.g., 401 Unauthorized)
-    if ((error as Error).message.includes("401")) {
-      console.log("Redirecting to /api/auth due to 401 Unauthorized error.");
-      return NextResponse.redirect(new URL("/api/auth", req.url));
-    }
-    // Handle other errors
+
     return NextResponse.redirect(new URL("/error", req.url));
   }
 }

@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React from "react";
 import { Metadata } from "next";
 import { getServerSession } from "next-auth/next";
 import Link from "next/link";
@@ -6,7 +6,9 @@ import SimpleAlert from "@/components/All/Alerts/SimpleAlert.tsx";
 
 import { getMetadata } from "./index.metadata";
 
-const Home: FC = async () => {
+export const dynamic = 'force-dynamic';
+
+const Home = async () => {
   const session = await getServerSession();
   if (session?.user) return <h1>Home</h1>;
 
@@ -25,9 +27,6 @@ const Home: FC = async () => {
         </Link>
         <br />
       </div>
-      <iframe
-        src="https://example.com"
-      ></iframe>
     </SimpleAlert>
   );
 };
@@ -38,4 +37,3 @@ export const metadata: Metadata = await getMetadata({
 });
 
 export default Home;
-
