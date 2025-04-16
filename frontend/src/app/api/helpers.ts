@@ -15,10 +15,8 @@ const handleFetchErrors = async (response: Response, requestUrl?: string) => {
     const errorMessage = `HTTP Error ${response.status}: ${response.statusText}`;
     console.error(errorMessage);
 
-    const refreshUrl = new URL(`/api/auth/refresh`, baseUrl);
-
     switch (response.status) {
-      case 500:
+      case 401:
         console.log("Error 401: Token not valid. Redirecting to refresh...");
         await fetchRefresh();
         redirect(requestUrl || "/");
@@ -34,18 +32,18 @@ const handleFetchErrors = async (response: Response, requestUrl?: string) => {
         redirect("/error");
         break;
 
-      case 401:
+      case 500:
         console.log("Error 500: Internal server error. Redirecting...");
         redirect("/error");
         break;
 
       default:
-        console.log("Unknown error occurred. Redirecting...");
+        console.log(`Error ${response.status} occurred. Redirecting...`);
         redirect("/error");
         break;
     }
 
-    throw new Error(errorMessage); // Ensures errors are properly handled upstream
+    return null; // Ensure the method returns a graceful fallback
   }
 
   return response.json(); // Returns the parsed response body
@@ -68,7 +66,7 @@ const fetchData = async (
     return await handleFetchErrors(response, callbackUrl || "/");
   } catch (error) {
     console.error("Error executing request:", error.toString());
-    throw error;
+    return null; // Avoid throwing errors and gracefully return null
   }
 };
 
@@ -87,20 +85,24 @@ export const fetchAuth = async (credentials: IDummyAuth) => {
     return await handleFetchErrors(response);
   } catch (error) {
     console.error("Authentication error:", error.toString());
-    throw error;
+    return null; // Graceful fallback
   }
 };
 
+// Function for refreshing tokens
 export const fetchRefresh = async (): Promise<void> => {
   try {
     const redisData = (await getRedisData(
       "dummy_auth",
     )) as unknown as IDummyAuthLoginResponse;
-    const { refreshToken } = redisData;
-    console.log(refreshToken);
+
+    const { refreshToken } = redisData || {};
     if (!refreshToken) {
-      console.error("Refresh token not found in Redis.");
-      redirect("/login");
+      console.error(
+        "Refresh token not found in Redis. Redirecting to login...",
+      );
+
+      return redirect("/login");
     }
 
     const response = await fetch(`${baseUrl}/auth/refresh`, {
@@ -114,7 +116,7 @@ export const fetchRefresh = async (): Promise<void> => {
 
     if (!response.ok) {
       console.error(`Failed to refresh token. Status: ${response.status}`);
-      redirect("/login");
+      return redirect("/login");
     }
 
     const updatedData = await response.json();
