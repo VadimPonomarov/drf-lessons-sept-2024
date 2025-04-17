@@ -1,6 +1,5 @@
 "use server";
 import { createClient } from "redis";
-import { IDummyAuthLoginResponse } from "@/common/interfaces/dummy.interfaces.ts";
 
 let redisClient: ReturnType<typeof createClient> | null = null;
 
