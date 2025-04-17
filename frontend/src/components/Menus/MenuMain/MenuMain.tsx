@@ -26,9 +26,15 @@ export const MenuMain = () => {
   useEffect(() => {
     const loadMenuState = async () => {
       try {
-        const savedState = await getRedisData('menu_state');
+        const savedState = await fetch('/api/redis', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ key: 'menu_state' }),
+        });
         if (savedState !== null) {
-          setShowFirstMenu(savedState === 'true');
+          setShowFirstMenu(Boolean(savedState));
         }
       } catch (error) {
         console.error('Failed to load menu state:', error);
