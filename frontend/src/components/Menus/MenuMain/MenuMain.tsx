@@ -49,7 +49,16 @@ export const MenuMain = () => {
   const handleMenuToggle = async (checked: boolean) => {
     setShowFirstMenu(checked);
     try {
-      await setRedisData('menu_state', checked.toString(), 86400); // Хранить 24 часа
+      await fetch("/api/redis", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          key: "menu_state",
+          value: checked.toString(),
+        }),
+      });
     } catch (error) {
       console.error('Failed to save menu state:', error);
     }
