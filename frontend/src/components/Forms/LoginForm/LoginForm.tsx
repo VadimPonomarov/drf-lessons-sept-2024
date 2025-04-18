@@ -16,8 +16,29 @@ import {
 import { AuthProvider, authProviderOptions } from "@/common/interfaces/auth.interfaces";
 
 import { useLoginForm, formFields } from "./useLoginForm";
+import { useAuthProviderContext } from "@/contexts/AuthProviderContext.tsx";
 
 const LoginForm: FC = () => {
+    const { authProvider, setAuthProvider } = useAuthProviderContext();
+    
+    const handleAuthProviderChange = async (value: AuthProvider) => {
+        setAuthProvider(value);
+        try {
+            await fetch("/api/redis", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    key: "auth_provider",
+                    value: value
+                }),
+            });
+        } catch (error) {
+            console.error("Error saving auth provider to Redis:", error);
+        }
+    };
+
     const {
         register,
         handleSubmit,
@@ -25,8 +46,6 @@ const LoginForm: FC = () => {
         isValid,
         onSubmit,
         error,
-        authProvider,
-        handleAuthProviderChange,
         reset,
         defaultValues
     } = useLoginForm();
