@@ -34,6 +34,7 @@ const LoginForm: FC = () => {
     return (
         <div className={"container-flex"}>
             <ResizableWrapper>
+                <h1 className="text-2xl font-bold mb-6">Login</h1>
                 <form onSubmit={handleSubmit(onSubmit)} className="form">
                     <Select
                         value={authProvider}

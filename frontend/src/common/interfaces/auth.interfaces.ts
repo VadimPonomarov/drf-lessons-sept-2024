@@ -1,4 +1,5 @@
 export enum AuthProvider {
+    Select = "Select ...",
     Dummy = "Dummy",
     MyBackendDocs = "MyBackendDocs"
 }
