@@ -4,8 +4,11 @@ import { useState } from "react";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { IRegistration } from "@/common/interfaces/auth.interfaces";
 import { FormFieldsConfig } from "@/common/interfaces/forms.interfaces";
+import { ISession } from "@/common/interfaces/session.interfaces";
+import { fetchUserCreate } from "@/app/api/helpers";
 
 import { schema } from "./index.joi";
 
@@ -17,10 +20,13 @@ export const formFields: FormFieldsConfig<IRegistration> = [
 
 export const useRegistrationForm = () => {
     const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
+    const { data: sessionData } = useSession();
+    const session = sessionData as unknown as ISession;
     
     const defaultValues: IRegistration = {
-        email: "",
+        email: session?.email || "",
         password: "",
         confirmPassword: "",
     };
@@ -39,27 +45,25 @@ export const useRegistrationForm = () => {
 
     const onSubmit: SubmitHandler<IRegistration> = async (data) => {
         try {
-            const registrationData = {
+            setIsLoading(true);
+            setError(null);
+
+            const response = await fetchUserCreate({
                 email: data.email,
                 password: data.password
-            };
-            
-            const response = await fetch("/api/auth/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(registrationData),
             });
 
-            if (!response.ok) {
+            if (!response) {
                 throw new Error("Registration failed");
             }
 
-            router.push("/login");
+            router.push("/login?message=Registration successful! Please login.");
+            
         } catch (error) {
-            console.error("Error during registration:", error);
-            setError("Registration failed. Please try again.");
+            setError(error instanceof Error ? error.message : "Registration failed. Please try again.");
+            console.error("Registration error:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -74,5 +78,6 @@ export const useRegistrationForm = () => {
         setError,
         defaultValues,
         watch,
+        isLoading,
     };
 };

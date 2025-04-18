@@ -5,6 +5,7 @@ export interface FormFieldConfig<T> extends React.InputHTMLAttributes<HTMLInputE
     label?: string;
     type: 'text' | 'password' | 'number' | 'email';
     condition?: (item: T | null) => boolean;
+    readOnly?: boolean;
 }
 
 export type FormFieldsConfig<T> = FormFieldConfig<T>[];

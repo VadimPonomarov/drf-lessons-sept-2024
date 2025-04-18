@@ -1,5 +1,4 @@
 import asyncio
-import os
 from contextlib import asynccontextmanager
 
 import pika
@@ -7,6 +6,7 @@ import uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
+from health import router as health_router
 
 from services.mail_services import send_email
 from services.pika_helper import ConnectionFactory
@@ -46,7 +46,7 @@ async def lifespan(app: FastAPI):
             try:
                 await consumer_task
             except asyncio.CancelledError:
-                logger.info("Сonsumer task cancelled successfully.")
+                logger.info("Consumer task cancelled successfully.")
 
         logger.info("Application shutdown completed.")
 
@@ -55,13 +55,14 @@ async def start_consumer():
     """
     Starts the RabbitMQ consumer as an asynchronous task.
     """
-
     def consume():
         # Create a RabbitMQ connection factory and start consuming messages
         connection = ConnectionFactory(
             pika.ConnectionParameters(
-                "rabbitmq" if os.environ.get("DOCKER",
-                                             "False") == "True" else "localhost"
+                # Always use the service name from docker-compose when in container
+                host="rabbitmq",  
+                heartbeat=600,    # Add heartbeat for connection stability
+                blocked_connection_timeout=300
             ),
             "email_queue",
             callback=lambda *args, **kwargs: send_email.delay(*args, **kwargs),
@@ -74,6 +75,36 @@ async def start_consumer():
 
 # Create a FastAPI application with a custom lifespan
 main_app = FastAPI(lifespan=lifespan, default_response_class=ORJSONResponse)
+main_app.include_router(health_router)
+
+@main_app.on_event("startup")
+async def startup_event():
+    """
+    Start the consumer when the application starts
+    """
+    if not settings.run.docker:
+        logger.info("Starting in local mode")
+        return
+        
+    logger.info("Starting consumer in Docker mode")
+    try:
+        consumer_task = asyncio.create_task(start_consumer())
+        asyncio.create_task(monitor_consumer(consumer_task))
+    except Exception as e:
+        logger.error(f"Failed to start consumer: {e}")
+
+async def monitor_consumer(consumer_task):
+    """
+    Monitor consumer state and restart if necessary
+    """
+    while True:
+        try:
+            await asyncio.sleep(30)  # Check every 30 seconds
+            if consumer_task.done():
+                logger.warning("Consumer task completed unexpectedly, restarting...")
+                consumer_task = asyncio.create_task(start_consumer())
+        except Exception as e:
+            logger.error(f"Error in consumer monitor: {e}")
 
 if __name__ == "__main__":
     try:

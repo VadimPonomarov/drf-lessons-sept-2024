@@ -14,4 +14,4 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 # Копируем файлы проекта
 COPY . .
 
-EXPOSE 8000
+EXPOSE 8001

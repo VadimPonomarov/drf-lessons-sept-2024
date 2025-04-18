@@ -19,7 +19,8 @@ BASE_DIR = Path(__file__).resolve().parents[2]
 SECRET_KEY = os.environ.get("SECRET_KEY", "secret_key")
 
 DEBUG = os.environ.get("DEBUG", "True") == "True"
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Application definition
 INSTALLED_APPS = [

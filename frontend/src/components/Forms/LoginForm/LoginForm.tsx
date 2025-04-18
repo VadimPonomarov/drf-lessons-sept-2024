@@ -14,9 +14,9 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { AuthProvider, authProviderOptions } from "@/common/interfaces/auth.interfaces";
+import { useAuthProviderContext } from "@/contexts/AuthProviderContext.tsx";
 
 import { useLoginForm, formFields } from "./useLoginForm";
-import { useAuthProviderContext } from "@/contexts/AuthProviderContext.tsx";
 
 const LoginForm: FC = () => {
     const { authProvider, setAuthProvider } = useAuthProviderContext();

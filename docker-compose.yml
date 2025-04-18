@@ -99,18 +99,30 @@ services:
   mailing:
     build: ./mailing
     environment:
-      DOCKER: True
+      DOCKER: "True"
       CELERY_BROKER: "${APP_CONFIG__CELERY_BROKER:-pyamqp://guest:guest@rabbitmq:5672//}"
+      PYTHONUNBUFFERED: 1  # Добавляем для лучшего логирования
     ports:
       - "8001:8000"
     depends_on:
-      - rabbitmq
-      - celery
-      - app
+      rabbitmq:
+        condition: service_healthy  # Ждем пока RabbitMQ будет готов
+      celery:
+        condition: service_started
+      app:
+        condition: service_started
     volumes:
       - ./mailing/src:/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped  # Добавляем политику перезапуска
     command: >
-      sh -c "uvicorn main:main_app --host 0.0.0.0 --port 8000"
+      sh -c "
+        python -m uvicorn main:main_app --host 0.0.0.0 --port 8000 --reload
+      "
 
   rabbitmq:
     image: rabbitmq:management-alpine

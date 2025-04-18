@@ -34,7 +34,7 @@ class ApiPrefix(BaseSettingsBase):
 
 
 class CeleryConfig(BaseSettingsBase):
-    celery_broker: str = "pyamqp://guest:guest@localhost//"
+    celery_broker: str = "pyamqp://guest:guest@rabbitmq:5672//"
     celery_backend: str = "rpc://"
     celery_include: str = "services.mail_services"
 

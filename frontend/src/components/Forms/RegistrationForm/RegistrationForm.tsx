@@ -20,6 +20,7 @@ const RegistrationForm: FC = () => {
         error,
         defaultValues,
         watch,
+        isLoading
     } = useRegistrationForm();
 
     const password = watch("password");
@@ -42,16 +43,21 @@ const RegistrationForm: FC = () => {
                     )}
                     <ButtonGroup orientation="horizontal">
                         <Button 
-                            variant={"outline"} 
+                            variant="outline" 
                             type="submit" 
-                            disabled={!isValid || !passwordsMatch}
+                            disabled={!isValid || !passwordsMatch || isLoading}
                         >
-                            <PaperAirplaneIcon className="h-5 w-5" />
+                            {isLoading ? (
+                                <span className="animate-spin">⌛</span>
+                            ) : (
+                                <PaperAirplaneIcon className="h-5 w-5" />
+                            )}
                         </Button>
                         <Button 
-                            variant={"outline"} 
+                            variant="outline" 
                             type="button" 
                             onClick={() => reset(defaultValues)}
+                            disabled={isLoading}
                         >
                             <ArrowPathIcon className="h-5 w-5" />
                         </Button>

@@ -3,6 +3,7 @@ import React, { FC } from "react";
 import { SessionProvider } from "next-auth/react";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProviderProvider } from "@/contexts/AuthProviderContext";
+
 import { IProps } from ".";
 
 const queryClient = new QueryClient();

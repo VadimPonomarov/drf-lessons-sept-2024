@@ -9,12 +9,12 @@ from apps.users.views.reset_password_views import ResetPasswordTokenView, \
 
 urlpatterns = [
     path("", ListUsersView.as_view(), name="users_list"),
-    path("create/", CreateUserView.as_view(), name="user_create"),
-    path('activate/', ActivateUserView.as_view(), name='user_activate'),
-    path("<int:pk>/", UserDetailView.as_view(), name="user_crud"),
-    path('<int:pk>/profile/avatar/', UpdateAvatarView.as_view(),
+    path("create", CreateUserView.as_view(), name="user_create"),
+    path('activate', ActivateUserView.as_view(), name='user_activate'),
+    path("<int:pk>", UserDetailView.as_view(), name="user_crud"),
+    path('<int:pk>/profile/avatar', UpdateAvatarView.as_view(),
          name='user_profile_upload_avatar'),
-    path('<int:pk>/reset-password-token/', ResetPasswordTokenView.as_view(),
+    path('<int:pk>/reset-password-token', ResetPasswordTokenView.as_view(),
          name='reset_password_token'),
-    path('reset-password/', ResetPasswordView.as_view(), name='reset_password'),
+    path('reset-password', ResetPasswordView.as_view(), name='reset_password'),
 ]

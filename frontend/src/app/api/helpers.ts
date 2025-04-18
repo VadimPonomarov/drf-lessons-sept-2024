@@ -149,3 +149,20 @@ export const fetchRecipeById = async (id: string) => {
 export const fetchRecipesByTag = async (name: string) => {
   return fetchData(`/recipes/tag/${name}`);
 };
+
+export const fetchUserCreate = async (credentials: { email: string; password: string }) => {
+  try {
+    const response = await fetch(`http://localhost:8888/api/users/create/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(credentials),
+    });
+
+    return await handleFetchErrors(response);
+  } catch (error) {
+    console.error("User creation error:", error.toString());
+    return null;
+  }
+};
