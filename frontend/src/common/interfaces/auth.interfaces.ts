@@ -1,3 +1,18 @@
+export enum AuthProvider {
+    Dummy = "Dummy",
+    MyBackendDocs = "MyBackendDocs"
+}
+
+export interface IAuthProviderOption {
+    value: AuthProvider;
+    label: string;
+}
+
+export const authProviderOptions: IAuthProviderOption[] = [
+    { value: AuthProvider.Dummy, label: "Dummy Auth" },
+    { value: AuthProvider.MyBackendDocs, label: "My Backend Docs" }
+];
+
 export interface IRegistration {
     email: string;
     password: string;

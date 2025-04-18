@@ -7,9 +7,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   IDummyAuth,
   IDummyAuthLoginResponse,
-} from "@/common/interfaces/dummy.interfaces.ts";
-import { FormFieldsConfig } from "@/common/interfaces/forms.interfaces.ts";
-import { fetchAuth } from "@/app/api/helpers.ts";
+} from "@/common/interfaces/dummy.interfaces";
+import { FormFieldsConfig } from "@/common/interfaces/forms.interfaces";
+import { AuthProvider } from "@/common/interfaces/auth.interfaces";
+import { fetchAuth } from "@/app/api/helpers";
 
 import { schema } from "./index.joi";
 
@@ -21,11 +22,14 @@ export const formFields: FormFieldsConfig<IDummyAuth> = [
 
 export const useLoginForm = () => {
   const [error, setError] = useState<string | null>(null);
+  const [authProvider, setAuthProvider] = useState<AuthProvider>(AuthProvider.Dummy);
+  
   const defaultValues: IDummyAuth = {
     username: "",
     password: "",
     expiresInMins: null,
   };
+  
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/users";
@@ -42,6 +46,10 @@ export const useLoginForm = () => {
   });
 
   const onSubmit: SubmitHandler<IDummyAuth> = async (data) => {
+    if (authProvider === AuthProvider.MyBackendDocs) {
+      return; // No action for MyBackendDocs
+    }
+
     try {
       const response = (await fetchAuth(data)) as IDummyAuthLoginResponse;
 
@@ -73,5 +81,7 @@ export const useLoginForm = () => {
     error,
     setError,
     defaultValues,
+    authProvider,
+    setAuthProvider,
   };
 };
