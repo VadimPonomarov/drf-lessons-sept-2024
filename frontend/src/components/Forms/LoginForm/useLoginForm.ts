@@ -22,7 +22,7 @@ export const formFields: FormFieldsConfig<IDummyAuth> = [
 
 export const useLoginForm = () => {
   const [error, setError] = useState<string | null>(null);
-  const [authProvider, setAuthProvider] = useState<AuthProvider>(AuthProvider.Dummy);
+  const [authProvider, setAuthProvider] = useState<AuthProvider>(AuthProvider.Select);
   
   const defaultValues: IDummyAuth = {
     username: "",

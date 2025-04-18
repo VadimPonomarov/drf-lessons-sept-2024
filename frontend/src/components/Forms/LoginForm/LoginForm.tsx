@@ -55,7 +55,7 @@ const LoginForm: FC = () => {
                         </SelectContent>
                     </Select>
 
-                    {authProvider && (
+                    {authProvider !== AuthProvider.Select && (
                         <>
                             {authProvider === AuthProvider.Dummy && (
                                 <div className="mt-4">
