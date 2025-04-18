@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -34,25 +34,6 @@ export const useLoginForm = () => {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/users";
 
-  // Добавляем useEffect для синхронизации с Redis
-  useEffect(() => {
-    const fetchAuthProvider = async () => {
-      try {
-        const response = await fetch("/api/redis?key=auth_provider");
-        if (response.ok) {
-          const data = await response.json();
-          if (data && data.value) {
-            setAuthProvider(data.value as AuthProvider);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching auth provider from Redis:", error);
-      }
-    };
-
-    fetchAuthProvider();
-  }, []); // Выполняется только при монтировании
-
   const {
     register,
     handleSubmit,
@@ -66,7 +47,7 @@ export const useLoginForm = () => {
 
   const onSubmit: SubmitHandler<IDummyAuth> = async (data) => {
     if (authProvider === AuthProvider.MyBackendDocs) {
-      return; // No action for MyBackendDocs
+      return;
     }
 
     try {
@@ -90,22 +71,21 @@ export const useLoginForm = () => {
     }
   };
 
-  const handleAuthProviderChange = async (value: AuthProvider) => {
+  const handleAuthProviderChange = (value: AuthProvider) => {
     setAuthProvider(value);
-    try {
-      await fetch("/api/redis", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          key: "auth_provider",
-          value: value
-        }),
-      });
-    } catch (error) {
+    // Сохраняем в Redis без привязки к состоянию
+    fetch("/api/redis", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        key: "auth_provider",
+        value: value
+      }),
+    }).catch(error => {
       console.error("Error saving auth provider to Redis:", error);
-    }
+    });
   };
 
   return {
