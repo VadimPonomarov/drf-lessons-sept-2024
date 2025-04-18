@@ -71,9 +71,9 @@ const fetchData = async (
 };
 
 // Function for authentication
-export const fetchAuth = async (credentials: IDummyAuth) => {
+export const fetchAuth = async (credentials: IDummyAuth, path?: string) => {
   try {
-    const response = await fetch(`${baseUrl}/auth/login`, {
+    const response = await fetch(path || `${baseUrl}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -90,10 +90,12 @@ export const fetchAuth = async (credentials: IDummyAuth) => {
 };
 
 // Function for refreshing tokens
-export const fetchRefresh = async (): Promise<void> => {
+export const fetchRefresh = async (
+  key: string = "dummy_auth",
+): Promise<void> => {
   try {
     const redisData = (await getRedisData(
-      "dummy_auth",
+      key,
     )) as unknown as IDummyAuthLoginResponse;
 
     const { refreshToken } = redisData || {};
@@ -120,7 +122,7 @@ export const fetchRefresh = async (): Promise<void> => {
     }
 
     const updatedData = await response.json();
-    await setRedisData("dummy_auth", JSON.stringify(updatedData));
+    await setRedisData(key, JSON.stringify(updatedData));
   } catch (error) {
     console.error("Error during token refresh:", error.toString());
     redirect("/login");

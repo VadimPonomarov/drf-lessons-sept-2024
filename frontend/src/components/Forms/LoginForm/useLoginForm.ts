@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -22,7 +22,7 @@ export const formFields: FormFieldsConfig<IDummyAuth> = [
 
 export const useLoginForm = () => {
   const [error, setError] = useState<string | null>(null);
-  const [authProvider, setAuthProvider] = useState<AuthProvider>(AuthProvider.Select);
+  const [authProvider, setAuthProvider] = useState<AuthProvider>(AuthProvider.Dummy);
   
   const defaultValues: IDummyAuth = {
     username: "",
@@ -33,6 +33,25 @@ export const useLoginForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/users";
+
+  // Добавляем useEffect для синхронизации с Redis
+  useEffect(() => {
+    const fetchAuthProvider = async () => {
+      try {
+        const response = await fetch("/api/redis?key=auth_provider");
+        if (response.ok) {
+          const data = await response.json();
+          if (data && data.value) {
+            setAuthProvider(data.value as AuthProvider);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching auth provider from Redis:", error);
+      }
+    };
+
+    fetchAuthProvider();
+  }, []); // Выполняется только при монтировании
 
   const {
     register,
@@ -71,6 +90,24 @@ export const useLoginForm = () => {
     }
   };
 
+  const handleAuthProviderChange = async (value: AuthProvider) => {
+    setAuthProvider(value);
+    try {
+      await fetch("/api/redis", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          key: "auth_provider",
+          value: value
+        }),
+      });
+    } catch (error) {
+      console.error("Error saving auth provider to Redis:", error);
+    }
+  };
+
   return {
     register,
     handleSubmit,
@@ -82,6 +119,6 @@ export const useLoginForm = () => {
     setError,
     defaultValues,
     authProvider,
-    setAuthProvider,
+    handleAuthProviderChange,
   };
 };

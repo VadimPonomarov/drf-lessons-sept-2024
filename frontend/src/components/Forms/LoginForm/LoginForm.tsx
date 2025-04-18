@@ -23,12 +23,12 @@ const LoginForm: FC = () => {
         handleSubmit,
         errors,
         isValid,
-        reset,
         onSubmit,
         error,
-        defaultValues,
         authProvider,
-        setAuthProvider,
+        handleAuthProviderChange,
+        reset,
+        defaultValues
     } = useLoginForm();
 
     return (
@@ -38,7 +38,7 @@ const LoginForm: FC = () => {
                 <form onSubmit={handleSubmit(onSubmit)} className="form">
                     <Select
                         value={authProvider}
-                        onValueChange={(value) => setAuthProvider(value as AuthProvider)}
+                        onValueChange={(value) => handleAuthProviderChange(value as AuthProvider)}
                     >
                         <SelectTrigger>
                             <SelectValue placeholder="Make your choice first..." />

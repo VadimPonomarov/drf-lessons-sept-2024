@@ -53,7 +53,6 @@ services:
     depends_on:
       - frontend
     volumes:
-      - ./client:/usr/share/nginx/html
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ./backend/static:/usr/share/nginx/doc
     healthcheck:
