@@ -64,5 +64,7 @@ export const config = {
     "/recipes/:path*",
     "/profile/:path*",
     "/users/:path*",
+    "/register/:path*",
+    "/login/:path*",
   ],
 };

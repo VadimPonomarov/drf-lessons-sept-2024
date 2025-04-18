@@ -6,6 +6,7 @@ import { FaSignOutAlt } from "react-icons/fa";
 import MenuComponent from "@/components/All/MenuComponent/MenuComponent";
 import { useAuthProviderContext } from "@/contexts/AuthProviderContext";
 import { AuthProvider } from "@/common/interfaces/auth.interfaces";
+import { IMenuItem } from "@/components/All/MenuComponent/menu.interfaces";
 
 export const MenuMain = () => {
   const { status } = useSession();
@@ -16,39 +17,40 @@ export const MenuMain = () => {
     const isDummy = authProvider === AuthProvider.Dummy;
     const isMyBackendDocs = authProvider === AuthProvider.MyBackendDocs;
     
-    const items = [
-      // Всегда показываем Home и Login
+    const items: IMenuItem[] = [
       { path: "/", label: "Home", disabled: false },
-      { path: "/login", label: "Login", disabled: false },
+    ];
 
-      // Auth показываем только когда НЕ аутентифицирован
-      ...(!isAuthenticated ? [{ 
+    if (!isAuthenticated) {
+      items.push({ 
         path: "/api/auth", 
         label: "Auth", 
-        disabled: false
-      }] : []),
+        disabled: false 
+      });
+      return items;
+    }
 
-      // Register показываем только для MyBackendDocs и когда НЕ аутентифицирован
-      ...(isMyBackendDocs && !isAuthenticated ? [{ 
+    items.push(
+      { path: "/login", label: "Login", disabled: false },
+      
+      ...(isMyBackendDocs ? [{ 
         path: "/register", 
         label: "Register", 
-        disabled: false
+        disabled: false 
       }] : []),
 
-      // Logout показываем только когда аутентифицирован
-      ...(isAuthenticated ? [{
+      {
         path: "#", 
         label: <FaSignOutAlt size={18} />, 
         disabled: false,
         cb: () => signOut({ callbackUrl: "/" }) 
-      }] : []),
+      },
 
-      // Users и Recipes показываем только для Dummy Auth и когда аутентифицирован
-      ...(isDummy && isAuthenticated ? [
+      ...(isDummy ? [
         { path: "/users", label: "Users", disabled: false },
         { path: "/recipes", label: "Recipes", disabled: false }
       ] : [])
-    ];
+    );
 
     return items;
   }, [authProvider, isAuthenticated]);

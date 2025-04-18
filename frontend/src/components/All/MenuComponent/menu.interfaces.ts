@@ -1,11 +1,10 @@
-import {ReactNode} from "react";
+import { ReactNode } from "react";
 
 export interface IMenuItem {
     path: string;
     label: string | ReactNode;
-    requiresAuth?: boolean;
     disabled?: boolean;
-    cb?: () => void
+    cb?: () => void;
 }
 
 export interface IProps {
