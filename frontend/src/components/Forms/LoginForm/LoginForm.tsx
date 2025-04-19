@@ -13,16 +13,20 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { AuthProvider, authProviderOptions } from "@/common/interfaces/auth.interfaces";
-import { useAuthProviderContext } from "@/contexts/AuthProviderContext.tsx";
-
-// Import form fields configurations
-import { useLoginForm } from "./useLoginForm";
-import { dummyFormFields, backendFormFields } from "./useLoginForm";
+import { AuthProvider, authProviderOptions, IBackendAuth } from "@/common/interfaces/auth.interfaces";
+import { IDummyAuth } from "@/common/interfaces/dummy.interfaces";
+import { useLoginForm, dummyFormFields, backendFormFields } from "./useLoginForm";
 
 const LoginForm: FC = () => {
-    const { authProvider, setAuthProvider } = useAuthProviderContext();
-    
+    const {
+        dummyForm,
+        backendForm,
+        error,
+        authProvider,
+        setAuthProvider,
+        onSubmit,
+    } = useLoginForm();
+
     const handleAuthProviderChange = async (value: AuthProvider) => {
         setAuthProvider(value);
         try {
@@ -41,86 +45,80 @@ const LoginForm: FC = () => {
         }
     };
 
-    const {
-        register,
-        handleSubmit,
-        errors,
-        isValid,
-        onSubmit,
-        error,
-        reset,
-        defaultValues
-    } = useLoginForm();
-
     return (
         <div className={"container-flex"}>
             <ResizableWrapper>
                 <h1 className="text-2xl font-bold mb-6">Login</h1>
-                <form onSubmit={handleSubmit(onSubmit)} className="form">
-                    <Select
-                        value={authProvider}
-                        onValueChange={(value) => handleAuthProviderChange(value as AuthProvider)}
-                    >
-                        <SelectTrigger>
-                            <SelectValue placeholder="Make your choice first..." />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {authProviderOptions.map((option) => (
-                                <SelectItem 
-                                    key={option.value} 
-                                    value={option.value}
-                                >
-                                    {option.label}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                <Select
+                    value={authProvider}
+                    onValueChange={(value) => handleAuthProviderChange(value as AuthProvider)}
+                >
+                    <SelectTrigger>
+                        <SelectValue placeholder="Make your choice first..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {authProviderOptions.map((option) => (
+                            <SelectItem 
+                                key={option.value} 
+                                value={option.value}
+                            >
+                                {option.label}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
 
-                    {authProvider !== AuthProvider.Select && (
-                        <>
-                            {authProvider === AuthProvider.Dummy && (
-                                <div className="mt-4">
-                                    <UsersComboBox reset={reset} />
-                                    <FormFieldsRenderer 
-                                        fields={dummyFormFields} 
-                                        register={register} 
-                                        errors={errors} 
-                                    />
-                                </div>
-                            )}
-                            {authProvider === AuthProvider.MyBackendDocs && (
-                                <div className="mt-4">
-                                    <FormFieldsRenderer 
-                                        fields={backendFormFields} 
-                                        register={register} 
-                                        errors={errors} 
-                                    />
-                                </div>
-                            )}
-                            {error && <div className="text-red-500 text-sm">{error}</div>}
-                            <ButtonGroup orientation="horizontal">
-                                <Button 
-                                    variant={"ghost"} 
-                                    type="submit" 
-                                    disabled={!isValid}
-                                >
-                                    <PaperAirplaneIcon className="h-5 w-5" />
-                                </Button>
-                                <Button 
-                                    variant={"ghost"} 
-                                    type="button" 
-                                    onClick={() => reset(defaultValues)}
-                                >
-                                    <ArrowPathIcon className="h-5 w-5" />
-                                </Button>
-                            </ButtonGroup>
-                        </>
-                    )}
-                </form>
+                {authProvider === AuthProvider.Dummy && (
+                    <form onSubmit={dummyForm.handleSubmit(onSubmit)} className="form">
+                        <div className="mt-4">
+                            <UsersComboBox reset={dummyForm.reset} />
+                            <FormFieldsRenderer<IDummyAuth>
+                                fields={dummyFormFields}
+                                register={dummyForm.register}
+                                errors={dummyForm.formState.errors}
+                            />
+                        </div>
+                        {renderFormButtons(dummyForm.formState.isValid, dummyForm.reset)}
+                    </form>
+                )}
+
+                {authProvider === AuthProvider.MyBackendDocs && (
+                    <form onSubmit={backendForm.handleSubmit(onSubmit)} className="form">
+                        <div className="mt-4">
+                            <FormFieldsRenderer<IBackendAuth>
+                                fields={backendFormFields}
+                                register={backendForm.register}
+                                errors={backendForm.formState.errors}
+                            />
+                        </div>
+                        {renderFormButtons(backendForm.formState.isValid, backendForm.reset)}
+                    </form>
+                )}
+
+                {error && <div className="text-red-500 text-sm">{error}</div>}
             </ResizableWrapper>
         </div>
     );
 };
+
+const renderFormButtons = (isValid: boolean, reset: () => void) => (
+    <ButtonGroup orientation="horizontal">
+        <Button 
+            variant={"ghost"} 
+            type="submit" 
+            disabled={!isValid}
+        >
+            <PaperAirplaneIcon className="h-5 w-5" />
+        </Button>
+        <Button 
+            variant={"ghost"} 
+            type="button" 
+            onClick={() => reset()}
+        >
+            <ArrowPathIcon className="h-5 w-5" />
+        </Button>
+    </ButtonGroup>
+);
 
 export default LoginForm;
 
