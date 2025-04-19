@@ -21,7 +21,9 @@ export async function middleware(req: NextRequestWithAuth) {
       console.log("Authentication failed. Redirecting to sign-in page...");
       // Redirect to sign-in page with a callback URL
       const callbackUrl = encodeURIComponent(req.url);
-      return NextResponse.redirect(new URL(`/api/auth/signin?callbackUrl=${callbackUrl}`, req.url));
+      return NextResponse.redirect(
+        new URL(`/api/auth/signin?callbackUrl=${callbackUrl}`, req.url),
+      );
     }
 
     return NextResponse.next();
@@ -39,5 +41,8 @@ export const config = {
     "/recipes/:path*",
     "/profile/:path*",
     "/users/:path*",
+    "/login/:path*",
+    "/register/:path*",
+    "/docs/:path*",
   ],
 };
