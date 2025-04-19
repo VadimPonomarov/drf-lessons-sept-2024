@@ -53,9 +53,12 @@ class UserSerializer(BaseModelSerializer):
     def create(self, validated_data):
         try:
             profile_data = validated_data.pop("profile", None)
-            user = UserModel(**validated_data)
-            user.set_password(validated_data["password"])
-            user.save()
+            # Use the manager's create_user method instead of direct creation
+            user = UserModel.objects.create_user(
+                email=validated_data["email"],
+                password=validated_data["password"],
+                **{k: v for k, v in validated_data.items() if k not in ["email", "password"]}
+            )
 
             if profile_data:
                 ProfileModel.objects.create(user=user, **profile_data)
@@ -64,11 +67,15 @@ class UserSerializer(BaseModelSerializer):
                 token=token, resource="api/users/activate"
             )
 
-            send_email_service(title="Activate your account", message=message,
-                               to_email=validated_data["email"])
+            send_email_service(
+                title="Activate your account", 
+                message=message,
+                to_email=validated_data["email"]
+            )
             return user
         except Exception as e:
             logger.error(f"Error in create(): {e}")
+            raise
 
     @transaction.atomic
     def update(self, instance, validated_data):

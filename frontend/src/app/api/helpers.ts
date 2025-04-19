@@ -152,7 +152,7 @@ export const fetchRecipesByTag = async (name: string) => {
 
 export const fetchUserCreate = async (credentials: { email: string; password: string }) => {
   try {
-    const response = await fetch(`http://localhost:8888/api/users/create/`, {
+    const response = await fetch(`http://localhost:8888/api/users/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -160,9 +160,17 @@ export const fetchUserCreate = async (credentials: { email: string; password: st
       body: JSON.stringify(credentials),
     });
 
-    return await handleFetchErrors(response);
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        error: data
+      };
+    }
+
+    return data;
   } catch (error) {
     console.error("User creation error:", error.toString());
-    return null;
+    throw new Error("Failed to create user. Please try again later.");
   }
 };

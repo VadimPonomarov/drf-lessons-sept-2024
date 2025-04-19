@@ -57,6 +57,15 @@ export const useRegistrationForm = () => {
                 throw new Error("Registration failed");
             }
 
+            if (response.error) {
+                // Handle specific error messages from the backend
+                if (response.error.email) {
+                    setError(response.error.email[0]);
+                    return;
+                }
+                throw new Error(response.error);
+            }
+
             router.push("/login?message=Registration successful! Please login.");
             
         } catch (error) {

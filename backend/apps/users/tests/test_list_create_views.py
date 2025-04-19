@@ -63,3 +63,23 @@ def test_create_user_view_invalid_data():
     errors = response.data
     assert "email" in errors
     assert "password" in errors
+
+@pytest.mark.django_db
+def test_email_validation_duplicate(admin_user):
+    """
+    Test that creating a user with an existing email returns appropriate error message.
+    """
+    client = APIClient()
+    client.force_authenticate(user=admin_user)
+    url = "/api/users/create/"
+    
+    # Create initial user
+    User.objects.create_user(email="duplicate@example.com", password="password123")
+    
+    # Attempt to create user with same email
+    data = {"email": "duplicate@example.com", "password": "password123"}
+    response = client.post(url, data, format="json")
+    
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert "email" in response.data
+    assert "User with this email already exists." in response.data["email"]
