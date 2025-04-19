@@ -1,7 +1,8 @@
 import Joi from "joi";
-import { IDummyAuth } from "@/common/interfaces/dummy.interfaces.ts";
+import { IDummyAuth } from "@/common/interfaces/dummy.interfaces";
+import { IBackendAuth } from "@/common/interfaces/auth.interfaces";
 
-export const schema = Joi.object<IDummyAuth>({
+export const dummySchema = Joi.object<IDummyAuth>({
     username: Joi.string().required().messages({
         "string.base": "Username must be a string",
         "any.required": "Username is required",
@@ -19,4 +20,19 @@ export const schema = Joi.object<IDummyAuth>({
     }),
 });
 
-
+export const backendSchema = Joi.object<IBackendAuth>({
+    email: Joi.string()
+        .email({ tlds: { allow: false } })
+        .required()
+        .messages({
+            "string.email": "Invalid email format",
+            "string.empty": "Email is required",
+            "any.required": "Email is required"
+        }),
+    password: Joi.string()
+        .required()
+        .messages({
+            "any.required": "Password is required",
+            "string.empty": "Password is not allowed to be empty",
+        }),
+});

@@ -16,7 +16,9 @@ import {
 import { AuthProvider, authProviderOptions } from "@/common/interfaces/auth.interfaces";
 import { useAuthProviderContext } from "@/contexts/AuthProviderContext.tsx";
 
-import { useLoginForm, formFields } from "./useLoginForm";
+// Import form fields configurations
+import { useLoginForm } from "./useLoginForm";
+import { dummyFormFields, backendFormFields } from "./useLoginForm";
 
 const LoginForm: FC = () => {
     const { authProvider, setAuthProvider } = useAuthProviderContext();
@@ -80,29 +82,38 @@ const LoginForm: FC = () => {
                                 <div className="mt-4">
                                     <UsersComboBox reset={reset} />
                                     <FormFieldsRenderer 
-                                        fields={formFields} 
+                                        fields={dummyFormFields} 
                                         register={register} 
                                         errors={errors} 
                                     />
-                                    {error && <div className="text-red-500 text-sm">{error}</div>}
-                                    <ButtonGroup orientation="horizontal">
-                                        <Button 
-                                            variant={"ghost"} 
-                                            type="submit" 
-                                            disabled={!isValid}
-                                        >
-                                            <PaperAirplaneIcon className="h-5 w-5" />
-                                        </Button>
-                                        <Button 
-                                            variant={"ghost"} 
-                                            type="button" 
-                                            onClick={() => reset(defaultValues)}
-                                        >
-                                            <ArrowPathIcon className="h-5 w-5" />
-                                        </Button>
-                                    </ButtonGroup>
                                 </div>
                             )}
+                            {authProvider === AuthProvider.MyBackendDocs && (
+                                <div className="mt-4">
+                                    <FormFieldsRenderer 
+                                        fields={backendFormFields} 
+                                        register={register} 
+                                        errors={errors} 
+                                    />
+                                </div>
+                            )}
+                            {error && <div className="text-red-500 text-sm">{error}</div>}
+                            <ButtonGroup orientation="horizontal">
+                                <Button 
+                                    variant={"ghost"} 
+                                    type="submit" 
+                                    disabled={!isValid}
+                                >
+                                    <PaperAirplaneIcon className="h-5 w-5" />
+                                </Button>
+                                <Button 
+                                    variant={"ghost"} 
+                                    type="button" 
+                                    onClick={() => reset(defaultValues)}
+                                >
+                                    <ArrowPathIcon className="h-5 w-5" />
+                                </Button>
+                            </ButtonGroup>
                         </>
                     )}
                 </form>

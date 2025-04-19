@@ -1,3 +1,8 @@
+export interface IBackendAuth {
+    email: string;
+    password: string;
+}
+
 export enum AuthProvider {
     Select = "Select ...",
     Dummy = "Dummy",

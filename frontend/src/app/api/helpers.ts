@@ -1,13 +1,14 @@
 "use server";
 
-import { baseUrl } from "@/common/constants/constants.ts";
+import { baseUrl } from "@/common/constants/constants";
 import {
   IDummyAuth,
   IDummyAuthLoginResponse,
-} from "@/common/interfaces/dummy.interfaces.ts";
-import { getAuthorizationHeaders } from "@/common/constants/headers.ts";
+} from "@/common/interfaces/dummy.interfaces";
+import { IBackendAuth } from "@/common/interfaces/auth.interfaces";
+import { getAuthorizationHeaders } from "@/common/constants/headers";
 import { redirect } from "next/navigation";
-import { getRedisData, setRedisData } from "@/services/redis/redisService.ts";
+import { getRedisData, setRedisData } from "@/services/redis/redisService";
 
 // Centralized error handler
 const handleFetchErrors = async (response: Response, requestUrl?: string) => {
@@ -71,9 +72,17 @@ const fetchData = async (
 };
 
 // Function for authentication
-export const fetchAuth = async (credentials: IDummyAuth, path?: string) => {
+export const fetchAuth = async (
+  credentials: IDummyAuth | IBackendAuth,
+  path?: string
+) => {
   try {
-    const response = await fetch(path || `${baseUrl}/auth/login`, {
+    // Determine the endpoint based on the credentials type
+    const endpoint = 'email' in credentials 
+      ? `${baseUrl}/auth/login/backend`  // Backend auth endpoint
+      : `${baseUrl}/auth/login`;         // Dummy auth endpoint
+
+    const response = await fetch(path || endpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
