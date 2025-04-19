@@ -1,4 +1,3 @@
-"use client";
 import React, { FC } from "react";
 import { ArrowPathIcon, PaperAirplaneIcon } from "@heroicons/react/16/solid";
 import { ResizableWrapper } from "@/components/All/ResizableWrapper/ResizableWrapper";
@@ -15,6 +14,8 @@ import {
 } from "@/components/ui/select";
 import { AuthProvider, authProviderOptions, IBackendAuth } from "@/common/interfaces/auth.interfaces";
 import { IDummyAuth } from "@/common/interfaces/dummy.interfaces";
+import { useAuthProviderContext } from "@/contexts/AuthProviderContext";
+
 import { useLoginForm, dummyFormFields, backendFormFields } from "./useLoginForm";
 
 const LoginForm: FC = () => {
@@ -23,26 +24,15 @@ const LoginForm: FC = () => {
         backendForm,
         error,
         authProvider,
-        setAuthProvider,
+        setAuthProvider: setLocalAuthProvider,
         onSubmit,
     } = useLoginForm();
+    const { setAuthProvider } = useAuthProviderContext();
 
     const handleAuthProviderChange = async (value: AuthProvider) => {
-        setAuthProvider(value);
-        try {
-            await fetch("/api/redis", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    key: "auth_provider",
-                    value: value
-                }),
-            });
-        } catch (error) {
-            console.error("Error saving auth provider to Redis:", error);
-        }
+        console.log('Changing auth provider to:', value);
+        setLocalAuthProvider(value);
+        await setAuthProvider(value);
     };
 
     return (
@@ -50,11 +40,11 @@ const LoginForm: FC = () => {
             <ResizableWrapper>
                 <h1 className="text-2xl font-bold mb-6">Login</h1>
                 <Select
-                    value={authProvider}
+                    value={authProvider === AuthProvider.Select ? undefined : authProvider}
                     onValueChange={(value) => handleAuthProviderChange(value as AuthProvider)}
                 >
                     <SelectTrigger>
-                        <SelectValue placeholder="Make your choice first..." />
+                        <SelectValue placeholder="Select ..." />
                     </SelectTrigger>
                     <SelectContent>
                         {authProviderOptions.map((option) => (
@@ -94,8 +84,6 @@ const LoginForm: FC = () => {
                         {renderFormButtons(backendForm.formState.isValid, backendForm.reset)}
                     </form>
                 )}
-
-                {error && <div className="text-red-500 text-sm">{error}</div>}
             </ResizableWrapper>
         </div>
     );

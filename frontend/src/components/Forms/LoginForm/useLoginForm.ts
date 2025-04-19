@@ -4,17 +4,17 @@ import { useState } from "react";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { useForm } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { IDummyAuth } from "@/common/interfaces/dummy.interfaces";
 import {
-  IDummyAuth,
-  IDummyAuthLoginResponse,
-} from "@/common/interfaces/dummy.interfaces";
-import { 
+  AuthProvider,
   IBackendAuth,
-  AuthProvider 
 } from "@/common/interfaces/auth.interfaces";
 import { FormFieldsConfig } from "@/common/interfaces/forms.interfaces";
 import { fetchAuth } from "@/app/api/helpers";
-import { dummySchema, backendSchema } from "./index.joi";
+import { ISession } from "@/common/interfaces/session.interfaces";
+
+import { backendSchema, dummySchema } from "./index.joi";
 
 export const dummyFormFields: FormFieldsConfig<IDummyAuth> = [
   { name: "username", label: "Username", type: "text" },
@@ -29,10 +29,14 @@ export const backendFormFields: FormFieldsConfig<IBackendAuth> = [
 
 export const useLoginForm = () => {
   const [error, setError] = useState<string | null>(null);
-  const [authProvider, setAuthProvider] = useState<AuthProvider>(AuthProvider.Select);
-  
+  const [authProvider, setAuthProvider] = useState<AuthProvider>(
+    AuthProvider.Select,
+  );
+
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { data: sessionData } = useSession();
+  const session = sessionData as unknown as ISession;
   const callbackUrl = searchParams.get("callbackUrl") || "/users";
 
   const dummyForm = useForm<IDummyAuth>({
@@ -48,7 +52,7 @@ export const useLoginForm = () => {
   const backendForm = useForm<IBackendAuth>({
     resolver: joiResolver(backendSchema),
     defaultValues: {
-      email: "",
+      email: session?.email || "",
       password: "",
     },
     mode: "all",
@@ -61,7 +65,10 @@ export const useLoginForm = () => {
         throw new Error("Login failed");
       }
 
-      const redisKey = authProvider === AuthProvider.MyBackendDocs ? "backend_auth" : "dummy_auth";
+      const redisKey =
+        authProvider === AuthProvider.MyBackendDocs
+          ? "backend_auth"
+          : "dummy_auth";
       await fetch("/api/redis", {
         method: "POST",
         headers: {
